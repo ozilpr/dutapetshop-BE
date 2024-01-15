@@ -1,12 +1,13 @@
 {
-  "name": "backend",
+  "name": "backend-new",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/server.js",
-    "lint": "eslint ./src"
+    "start": "nodemon ./src/index.js",
+    "lint": "eslint ./src",
+    "migrate": "node-pg-migrate"
   },
   "keywords": [],
   "author": "",
