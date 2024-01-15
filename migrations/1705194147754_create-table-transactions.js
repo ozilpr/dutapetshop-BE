@@ -31,7 +31,7 @@ exports.up = pgm => {
       notNull: false,
       default: null
     }
-  })
+  }, { ifNotExists: true })
 
   pgm.addConstraint('transactions', 'fk_transactions.resource_id_med_resources.id', {
     foreignKeys: {
@@ -46,6 +46,6 @@ exports.up = pgm => {
 }
 
 exports.down = pgm => {
-  pgm.dropConstraint('fk_transactions.resource_id_med_resources.id')
+  pgm.dropConstraint('fk_transactions.resource_id_med_resources.id', { ifExists: true })
   pgm.dropTable('transactions', { ifExists: true })
 }

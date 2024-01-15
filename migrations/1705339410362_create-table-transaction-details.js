@@ -27,7 +27,7 @@ exports.up = pgm => {
         where: 'deleted_at IS NULL'
       }
     }
-  })
+  }, { ifNotExists: true })
 
   pgm.addConstraint('transaction_details', 'fk_transaction_details.owner_id_owners.id', {
     foreignKeys: {
@@ -38,11 +38,11 @@ exports.up = pgm => {
         where: 'deleted_at IS NULL'
       }
     }
-  })
+  }, { ifNotExists: true })
 }
 
 exports.down = pgm => {
-  pgm.dropConstraint('transaction_details', 'fk_transaction_details.transaction_id_transactions.id')
-  pgm.dropConstraint('transaction_details', 'fk_transaction_details.owner_id_owners.id')
-  pgm.dropTable('transaction_details')
+  pgm.dropConstraint('transaction_details', 'fk_transaction_details.transaction_id_transactions.id', { ifExists: true })
+  pgm.dropConstraint('transaction_details', 'fk_transaction_details.owner_id_owners.id', { ifExists: true })
+  pgm.dropTable('transaction_details', { ifExists: true })
 }
