@@ -17,7 +17,7 @@ exports.up = pgm => {
       type: 'INTEGER',
       notNull: true
     },
-    transaction_date: {
+    created_at: {
       type: 'TIMESTAMP',
       notNull: true,
       default: pgm.func('current_timestamp')
