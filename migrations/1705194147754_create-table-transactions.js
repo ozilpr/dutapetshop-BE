@@ -5,10 +5,6 @@ exports.up = pgm => {
       primaryKey: true,
       notNull: true
     },
-    owner_id: {
-      type: 'VARCHAR(16)',
-      notNull: true
-    },
     resource_id: {
       type: 'VARCHAR(16)',
       notNull: true
@@ -37,9 +33,19 @@ exports.up = pgm => {
     }
   })
 
-  pgm.addConstraint('transactions', 'fk_transactions.owner_id_owners.id', {})
+  pgm.addConstraint('transactions', 'fk_transactions.resource_id_med_resources.id', {
+    foreignKeys: {
+      columns: 'resource_id',
+      references: 'med_resources(id)',
+      onDelete: 'CASCADE',
+      exclude: {
+        where: 'deleted_at IS NULL'
+      }
+    }
+  }, { ifNotExists: true })
 }
 
 exports.down = pgm => {
-  pgm.dropTable('transactions')
+  pgm.dropConstraint('fk_transactions.resource_id_med_resources.id')
+  pgm.dropTable('transactions', { ifExists: true })
 }
