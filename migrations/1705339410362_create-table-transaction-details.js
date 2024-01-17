@@ -4,9 +4,18 @@ exports.up = pgm => {
       type: 'VARCHAR(16)',
       notNull: true
     },
-    transaction_id: {},
-    owner_id: {},
-    transaction_date: {},
+    transaction_id: {
+      type: 'VARCHAR(16)',
+      notNull: true
+    },
+    owner_id: {
+      type: 'VARCHAR(16)',
+      notNull: true
+    },
+    transaction_date: {
+      type: 'TEXT',
+      notNull: true
+    },
     updated_at: {
       type: 'TEXT',
       notNull: true
@@ -20,7 +29,7 @@ exports.up = pgm => {
 
   pgm.addConstraint('transaction_details', 'fk_transaction_details.transaction_id_transactions.id', {
     foreignKeys: {
-      column: 'transaction_id',
+      columns: 'transaction_id',
       references: 'transactions(id)',
       onDelete: 'CASCADE',
       exclude: {
@@ -31,7 +40,7 @@ exports.up = pgm => {
 
   pgm.addConstraint('transaction_details', 'fk_transaction_details.owner_id_owners.id', {
     foreignKeys: {
-      column: 'owner_id',
+      columns: 'owner_id',
       references: 'owners(id)',
       onDelete: 'CASCADE',
       exclude: {
