@@ -18,7 +18,7 @@ class medResourcesService {
       values: [id, name, description, type, price, createdAt, updatedAt]
     }
 
-    const result = this._pool.query(query)
+    const result = await this._pool.query(query)
 
     if (!result.rows[0].id) throw new InvariantError('Resource gagal ditambahkan')
 
@@ -26,7 +26,7 @@ class medResourcesService {
   }
 
   async getResources () {
-    const result = await this._pool.query('SELECT * FROM med_resources WHERE deleted_at IS NULL')
+    const result = await this._pool.query('SELECT id, name, description, type, price, created_at FROM med_resources WHERE deleted_at IS NULL')
 
     return result.rows
   }
@@ -37,7 +37,7 @@ class medResourcesService {
       values: [id]
     }
 
-    const result = this._pool.query(query)
+    const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Resource tidak ditemukan')
 
@@ -51,7 +51,7 @@ class medResourcesService {
       values: [name, description, type, price, updatedAt, id]
     }
 
-    const result = this._pool.query(query)
+    const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui resource. Id tidak ditemukan')
 
@@ -65,7 +65,7 @@ class medResourcesService {
       values: [deletedAt, id]
     }
 
-    const result = this._pool.query(query)
+    const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal menghapus resource. Id tidak ditemukan')
 
