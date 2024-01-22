@@ -1,13 +1,17 @@
 exports.up = pgm => {
   pgm.createTable('pets', {
     id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       primaryKey: true,
       notNull: true
     },
     name: {
       type: 'VARCHAR(50)',
       notNull: true
+    },
+    type: {
+      type: 'VARCHAR(30)',
+      notNull: false
     },
     race: {
       type: 'VARCHAR(30)',
@@ -23,7 +27,7 @@ exports.up = pgm => {
     },
     created_at: {
       type: 'TEXT',
-      notNull: false
+      notNull: true
     },
     updated_at: {
       type: 'TEXT',

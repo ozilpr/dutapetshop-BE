@@ -1,11 +1,11 @@
 exports.up = pgm => {
   pgm.createTable('pet_owner', {
     owner_id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       notNull: true
     },
     pet_id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       notNull: true
     },
     created_at: {
@@ -14,11 +14,11 @@ exports.up = pgm => {
     },
     updated_at: {
       type: 'TEXT',
-      notNull: true
+      notNull: false
     },
     deleted_at: {
       type: 'TEXT',
-      notNull: true,
+      notNull: false,
       default: null
     }
   }, { ifNotExists: true })

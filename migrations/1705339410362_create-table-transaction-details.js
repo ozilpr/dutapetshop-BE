@@ -1,15 +1,15 @@
 exports.up = pgm => {
   pgm.createTable('transaction_details', {
     id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       notNull: true
     },
     transaction_id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       notNull: true
     },
     owner_id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       notNull: true
     },
     transaction_date: {
@@ -18,11 +18,11 @@ exports.up = pgm => {
     },
     updated_at: {
       type: 'TEXT',
-      notNull: true
+      notNull: false
     },
     deleted_at: {
       type: 'TEXT',
-      notNull: true,
+      notNull: false,
       default: null
     }
   }, { ifNotExists: true })
@@ -51,7 +51,7 @@ exports.up = pgm => {
 }
 
 exports.down = pgm => {
-  pgm.dropConstraint('transaction_details', 'fk_transaction_details.transaction_id_transactions.id', { ifExists: true })
   pgm.dropConstraint('transaction_details', 'fk_transaction_details.owner_id_owners.id', { ifExists: true })
+  pgm.dropConstraint('transaction_details', 'fk_transaction_details.transaction_id_transactions.id', { ifExists: true })
   pgm.dropTable('transaction_details', { ifExists: true })
 }

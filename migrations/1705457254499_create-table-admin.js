@@ -1,7 +1,7 @@
 exports.up = pgm => {
   pgm.createTable('admin', {
     id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       primaryKey: true,
       notNull: true
     },
@@ -23,11 +23,11 @@ exports.up = pgm => {
     },
     updated_at: {
       type: 'TEXT',
-      notNull: true
+      notNull: false
     },
     deleted_at: {
       type: 'TEXT',
-      notNull: true,
+      notNull: false,
       default: null
     }
   }, { ifNotExists: true })

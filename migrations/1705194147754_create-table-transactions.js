@@ -1,12 +1,12 @@
 exports.up = pgm => {
   pgm.createTable('transactions', {
     id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       primaryKey: true,
       notNull: true
     },
     resource_id: {
-      type: 'VARCHAR(16)',
+      type: 'VARCHAR(30)',
       notNull: true
     },
     quantity: {
@@ -45,6 +45,6 @@ exports.up = pgm => {
 }
 
 exports.down = pgm => {
-  pgm.dropConstraint('fk_transactions.resource_id_med_resources.id', { ifExists: true })
+  pgm.dropConstraint('transactions', 'fk_transactions.resource_id_med_resources.id', { ifExists: true })
   pgm.dropTable('transactions', { ifExists: true })
 }
