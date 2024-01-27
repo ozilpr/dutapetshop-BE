@@ -8,7 +8,7 @@ class ownersService {
     this._pool = new Pool()
   }
 
-  async addOwner (registerCode, name, phone) {
+  async addOwner ({ registerCode, name, phone }) {
     const id = `owner-${nanoid(8)}`
     const createdAt = new Date().toISOString()
     const query = {
