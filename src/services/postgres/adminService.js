@@ -87,7 +87,7 @@ class adminService {
     const hashedPassword = await bcryptjs.hash(password, 10)
 
     const query = {
-      text: 'UPDATE admin SET username = $1, password = $2, fullname = $3, updated_at = $4 WHERE id = $5',
+      text: 'UPDATE admin SET username = $1, password = $2, fullname = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL',
       values: [username, hashedPassword, fullname, updatedAt, id]
     }
 
@@ -99,7 +99,7 @@ class adminService {
   async deleteAdminById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE admin SET deleted_at = $1  WHERE id = $1',
+      text: 'UPDATE admin SET deleted_at = $1  WHERE id = $1 AND deleted_at IS NULL',
       values: [deletedAt, id]
     }
 
