@@ -9,7 +9,7 @@ class medResourcesService {
   }
 
   async addResource ({ name, description, type, price }) {
-    const id = `resource-${nanoid(16)}`
+    const id = `resource-${nanoid(8)}`
     const createdAt = new Date().toISOString()
     const updatedAt = createdAt
 
@@ -47,21 +47,19 @@ class medResourcesService {
   async editResourceById (id, { name, description, type, price }) {
     const updatedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE med_resources SET name = $1, description = $2, type = $3, price = $4 updated_at = $5 WHERE id = $6 RETURNING id',
+      text: 'UPDATE med_resources SET name = $1, description = $2, type = $3, price = $4 updated_at = $5 WHERE id = $6 AND deleted_at IS NULL',
       values: [name, description, type, price, updatedAt, id]
     }
 
     const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui resource. Id tidak ditemukan')
-
-    return result.rows
   }
 
   async deleteResourceById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE med_resources set deleted_at = $1 WHERE id = $2 RETURNING id',
+      text: 'UPDATE med_resources set deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL',
       values: [deletedAt, id]
     }
 

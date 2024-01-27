@@ -9,7 +9,7 @@ class petsService {
   }
 
   async addPet ({ name, type, race, gender, birthdate }) {
-    const id = `pet-${nanoid(16)}`
+    const id = `pet-${nanoid(8)}`
     const createdAt = new Date().toISOString()
     const query = {
       text: 'INSERT INTO pets VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
@@ -45,21 +45,19 @@ class petsService {
   async editPetById (id, { name, type, race, gender, birthdate }) {
     const updatedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE pets SET name = $1, type = $2, race = $3, gender = $4, birthdate = $5, updated_at = $6 WHERE id = $1 RETURNING id',
+      text: 'UPDATE pets SET name = $1, type = $2, race = $3, gender = $4, birthdate = $5, updated_at = $6 WHERE id = $1 AND deleted_at IS NULL',
       values: [name, type, race, gender, birthdate, updatedAt, id]
     }
 
     const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui peliharaan. Id tidak ditemukan')
-
-    return result.rows
   }
 
   async deletePetById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE pets SET deleted_at = $1 WHERE id = $2 RETURNING id',
+      text: 'UPDATE pets SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL',
       values: [deletedAt, id]
     }
 

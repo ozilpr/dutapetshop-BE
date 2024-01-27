@@ -9,7 +9,7 @@ class ownersService {
   }
 
   async addOwner (registerCode, name, phone) {
-    const id = `owner-${nanoid(16)}`
+    const id = `owner-${nanoid(8)}`
     const createdAt = new Date().toISOString()
     const query = {
       text: 'INSERT INTO owners VALUES($1, $2, $3, $4, $5) RETURNING id',
@@ -45,21 +45,19 @@ class ownersService {
   async editOwnerById (id, { registerCode, name, phone }) {
     const updatedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE owners SET register_code = $1, name = $2, phone = $3, updated_at = $4 WHERE id = $5 RETURNING id',
+      text: 'UPDATE owners SET register_code = $1, name = $2, phone = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL',
       values: [registerCode, name, phone, updatedAt, id]
     }
 
     const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui owner. Id tidak ditemukan')
-
-    return result.rows
   }
 
   async deleteOwnerById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE owners SET deleted_at = $1 WHERE id = $2 RETURNING id',
+      text: 'UPDATE owners SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL',
       values: [deletedAt, id]
     }
 

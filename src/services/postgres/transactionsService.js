@@ -9,7 +9,7 @@ class transactionsService {
   }
 
   async addTransaction ({ transactionData }) {
-    const id = `transaction-${nanoid(16)}`
+    const id = `transaction-${nanoid(8)}`
     const createdAt = new Date().toISOString()
     const client = await this._pool.connect()
 
@@ -72,7 +72,7 @@ class transactionsService {
   }
 
   async getTransactions () {
-    const result = await this._pool.query('SELECT id, resource_id, quantity, price, created_at FROM transactions')
+    const result = await this._pool.query('SELECT id, resource_id, quantity, price, created_at FROM transactions WHERE deleted_at IS NULL')
 
     return result.rows
   }
@@ -107,7 +107,8 @@ class transactionsService {
                                             FROM transactions t
                                             INNER JOIN med_resources r ON t.resource_id = r.id
                                             WHERE t.id = ${id}
-                                              AND deleted_at IS NULL`)
+                                              AND t.deleted_at IS NULL
+                                              AND r.deleted_at IS NULL`)
 
     if (!result.rows.length) throw new NotFoundError('Transaksi tidak ditemukan')
 
@@ -173,57 +174,49 @@ class transactionsService {
   async editTransactionById (id, { resourceId, quantity, price }) {
     const updatedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE transactions SET resource_id = $1, quantity = $2, price = $3, updated_at = $4 WHERE id = $5 RETURNING id',
+      text: 'UPDATE transactions SET resource_id = $1, quantity = $2, price = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL',
       values: [resourceId, quantity, price, updatedAt, id]
     }
 
     const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui Transaksi. Id tidak ditemukan')
-
-    return result.rows
   }
 
   async editTransactionDetailById (id, { transactionId, ownerId }) {
     const updatedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE transaction_details set transaction_id = $1, owner_id = $2, updated_at = $3 WHERE id = $4 RETURNING id',
+      text: 'UPDATE transaction_details set transaction_id = $1, owner_id = $2, updated_at = $3 WHERE id = $4 AND deleted_at IS NULL',
       values: [transactionId, ownerId, updatedAt, id]
     }
 
     const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui detail transaksi. Id tidak ditemukan')
-
-    return result.rows
   }
 
   async deleteTransactionById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE transactions SET deleted_at = $1 WHERE id = $2 RETURNING id',
+      text: 'UPDATE transactions SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL',
       values: [deletedAt, id]
     }
 
     const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal menghapus transaksi. Id tidak ditemukan')
-
-    return result.rows
   }
 
   async deleteTransactionDetailById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE transaction_details SET deleted_at = $1 WHERE id = $2 RETURNING id',
+      text: 'UPDATE transaction_details SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL',
       values: [deletedAt, id]
     }
 
     const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Gagal menghapus detail transaksi. Id tidak ditemukan')
-
-    return result.rows
   }
 }
 
