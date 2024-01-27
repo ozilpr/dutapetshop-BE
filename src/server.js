@@ -6,8 +6,13 @@ const ClientError = require('./exceptions/ClientError')
 const resources = require('./api/med-resources')
 const ResourcesService = require('./services/postgres/medResourcesService')
 
+const owners = require('./api/owners')
+const OwnersService = require('./services/postgres/ownersService')
+
 const init = async () => {
   const resourcesService = new ResourcesService()
+  const ownersService = new OwnersService()
+
   const server = Hapi.server({
     port: process.env.PORT,
     host: process.env.HOST,
@@ -23,6 +28,12 @@ const init = async () => {
       plugin: resources,
       options: {
         service: resourcesService
+      }
+    },
+    {
+      plugin: owners,
+      options: {
+        service: ownersService
       }
     }
   ])
