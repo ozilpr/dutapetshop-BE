@@ -9,9 +9,13 @@ const ResourcesService = require('./services/postgres/medResourcesService')
 const owners = require('./api/owners')
 const OwnersService = require('./services/postgres/ownersService')
 
+const pets = require('./api/pets')
+const PetsService = require('./services/postgres/petsService')
+
 const init = async () => {
   const resourcesService = new ResourcesService()
   const ownersService = new OwnersService()
+  const petsService = new PetsService()
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -34,6 +38,12 @@ const init = async () => {
       plugin: owners,
       options: {
         service: ownersService
+      }
+    },
+    {
+      plugin: pets,
+      options: {
+        service: petsService
       }
     }
   ])
