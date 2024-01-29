@@ -3,7 +3,7 @@ const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
 
-class transactionsService {
+class TransactionsService {
   constructor () {
     this._pool = new Pool()
   }
@@ -220,4 +220,4 @@ class transactionsService {
   }
 }
 
-module.exports = transactionsService
+module.exports = TransactionsService

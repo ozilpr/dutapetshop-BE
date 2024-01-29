@@ -5,12 +5,14 @@ const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
 const AuthenticationError = require('../../exceptions/AuthenticationsError')
 
-class adminService {
+class AdminService {
   constructor () {
     this._pool = new Pool()
   }
 
   async addAdmin ({ username, password, fullname }) {
+    await this.verifyNewUsername(username)
+
     const id = `admin-${nanoid(8)}`
     const createdAt = new Date().toISOString()
     const hashedPassword = await bcryptjs.hash(password, 10)
@@ -39,7 +41,7 @@ class adminService {
     return result.rows
   }
 
-  async getAdminByUsername (username) {
+  async getAdminByUsername ({ username }) {
     const query = {
       text: 'SELECT id, username, fullname FROM admin WHERE username LIKE $1 AND deleted_at IS NULL',
       values: [username]
@@ -99,7 +101,7 @@ class adminService {
   async deleteAdminById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE admin SET deleted_at = $1  WHERE id = $1 AND deleted_at IS NULL',
+      text: 'UPDATE admin SET deleted_at = $1 WHERE id = $1 AND deleted_at IS NULL',
       values: [deletedAt, id]
     }
 
@@ -109,4 +111,4 @@ class adminService {
   }
 }
 
-module.exports = adminService
+module.exports = AdminService
