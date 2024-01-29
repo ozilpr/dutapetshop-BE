@@ -4,18 +4,22 @@ require('dotenv').config()
 const ClientError = require('./exceptions/ClientError')
 
 const resources = require('./api/med-resources')
-const ResourcesService = require('./services/postgres/medResourcesService')
+const ResourcesService = require('./services/postgres/MedResourcesService')
 
 const owners = require('./api/owners')
-const OwnersService = require('./services/postgres/ownersService')
+const OwnersService = require('./services/postgres/OwnersService')
 
 const pets = require('./api/pets')
-const PetsService = require('./services/postgres/petsService')
+const PetsService = require('./services/postgres/PetsService')
+
+const admin = require('./api/admin')
+const AdminService = require('./services/postgres/AdminService')
 
 const init = async () => {
   const resourcesService = new ResourcesService()
   const ownersService = new OwnersService()
   const petsService = new PetsService()
+  const adminService = new AdminService()
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -44,6 +48,12 @@ const init = async () => {
       plugin: pets,
       options: {
         service: petsService
+      }
+    },
+    {
+      plugin: admin,
+      options: {
+        service: adminService
       }
     }
   ])
