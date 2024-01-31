@@ -1,25 +1,37 @@
-const Hapi = require('@hapi/hapi')
 require('dotenv').config()
+
+const Hapi = require('@hapi/hapi')
+const Jwt = require('@hapi/jwt')
 
 const ClientError = require('./exceptions/ClientError')
 
+// medical resources
 const resources = require('./api/med-resources')
 const ResourcesService = require('./services/postgres/MedResourcesService')
 
+// owners
 const owners = require('./api/owners')
 const OwnersService = require('./services/postgres/OwnersService')
 
+// pets
 const pets = require('./api/pets')
 const PetsService = require('./services/postgres/PetsService')
 
+// admin
 const admin = require('./api/admin')
 const AdminService = require('./services/postgres/AdminService')
+
+// authentications
+const authentications = require('./api/authentications')
+const AuthenticationsService = require('./services/postgres/AuthenticationsService')
+const TokenManager = require('./tokenize/TokenManager')
 
 const init = async () => {
   const resourcesService = new ResourcesService()
   const ownersService = new OwnersService()
   const petsService = new PetsService()
   const adminService = new AdminService()
+  const authenticationsService = new AuthenticationsService()
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -29,6 +41,28 @@ const init = async () => {
         origin: ['*']
       }
     }
+  })
+
+  await server.register([
+    {
+      plugin: Jwt
+    }
+  ])
+
+  server.auth.strategy('dutapetshop_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id
+      }
+    })
   })
 
   await server.register([
@@ -54,6 +88,16 @@ const init = async () => {
       plugin: admin,
       options: {
         service: adminService
+      }
+    },
+    {
+      plugin: authentications,
+      options: {
+        service: {
+          authenticationsService,
+          adminService,
+          tokenManager: TokenManager
+        }
       }
     }
   ])

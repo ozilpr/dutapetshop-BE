@@ -2,27 +2,42 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/pet',
-    handler: handler.addPetHandler
+    handler: handler.addPetHandler,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   },
   {
     method: 'GET',
     path: '/pet',
-    handler: handler.getPetsHandler
+    handler: handler.getPetsHandler,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   },
   {
     method: 'GET',
     path: '/pet/{id}',
-    handler: handler.getPetByIdHandler
+    handler: handler.getPetByIdHandler,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   },
   {
     method: 'PUT',
     path: '/pet/{id}',
-    handler: handler.editPetByIdHandler
+    handler: handler.editPetByIdHandler,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   },
   {
     method: 'DELETE',
     path: '/pet/{id}',
-    handler: handler.deletePetByIdHandler
+    handler: handler.deletePetByIdHandler,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   }
 ]
 

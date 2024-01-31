@@ -2,27 +2,42 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/resource',
-    handler: handler.addResourceHandler
+    handler: handler.addResourceHandler,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   },
   {
     method: 'GET',
     path: '/resource',
-    handler: handler.getResourcesHandler
+    handler: handler.getResourcesHandler,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   },
   {
     method: 'GET',
     path: '/resource/{id}',
-    handler: handler.getResourceById
+    handler: handler.getResourceById,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   },
   {
     method: 'PUT',
     path: '/resource/{id}',
-    handler: handler.editResourceById
+    handler: handler.editResourceById,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   },
   {
-    method: 'PUT',
+    method: 'DELETE',
     path: '/resource/{id}',
-    handler: handler.deleteResourceById
+    handler: handler.deleteResourceById,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
   }
 ]
 
