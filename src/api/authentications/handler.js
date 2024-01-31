@@ -9,7 +9,7 @@ class AuthenticationsHandler {
     autoBind(this)
   }
 
-  async postAuthenticationHanlder (request, h) {
+  async postAuthenticationHandler (request, h) {
     const { username, password } = request.payload
     const id = await this._adminService.verifyCredential(username, password)
 
