@@ -32,7 +32,7 @@ class OwnersHandler {
     }
   }
 
-  async editOwnerById (request) {
+  async editOwnerByIdHandler (request) {
     const { id } = request.params
 
     await this._service.editOwnerById(id, request.payload)
@@ -43,7 +43,7 @@ class OwnersHandler {
     }
   }
 
-  async deleteOwnerById (request) {
+  async deleteOwnerByIdHandler (request) {
     const { id } = request.params
 
     await this._service.deleteOwnerById(id)

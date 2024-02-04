@@ -1,4 +1,5 @@
 const autoBind = require('auto-bind')
+
 class MedResourcesHandler {
   constructor (service) {
     this._service = service
@@ -55,7 +56,7 @@ class MedResourcesHandler {
     }
   }
 
-  async deleteResourceById (request) {
+  async deleteResourceByIdHandler (request) {
     const { id } = request.params
     this._service.deleteResourceById(id)
 

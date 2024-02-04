@@ -18,7 +18,7 @@ const routes = (handler) => [
   {
     method: 'GET',
     path: '/resource/{id}',
-    handler: handler.getResourceById,
+    handler: handler.getResourceByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
@@ -26,7 +26,7 @@ const routes = (handler) => [
   {
     method: 'PUT',
     path: '/resource/{id}',
-    handler: handler.editResourceById,
+    handler: handler.editResourceByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
@@ -34,7 +34,7 @@ const routes = (handler) => [
   {
     method: 'DELETE',
     path: '/resource/{id}',
-    handler: handler.deleteResourceById,
+    handler: handler.deleteResourceByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
