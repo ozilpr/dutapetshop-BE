@@ -2,7 +2,7 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/owner',
-    handler: handler.addOwner,
+    handler: handler.addOwnerHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
@@ -10,7 +10,7 @@ const routes = (handler) => [
   {
     method: 'GET',
     path: '/owner',
-    handler: handler.getOwners,
+    handler: handler.getOwnersHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
@@ -18,7 +18,7 @@ const routes = (handler) => [
   {
     method: 'GET',
     path: '/owner/{id}',
-    handler: handler.getOwnerById,
+    handler: handler.getOwnerByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
@@ -26,7 +26,7 @@ const routes = (handler) => [
   {
     method: 'PUT',
     path: '/owner/{id}',
-    handler: handler.editOwnerById,
+    handler: handler.editOwnerByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
@@ -34,7 +34,7 @@ const routes = (handler) => [
   {
     method: 'DELETE',
     path: '/owner/{id}',
-    handler: handler.deleteOwnerById,
+    handler: handler.deleteOwnerByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
