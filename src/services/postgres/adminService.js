@@ -10,7 +10,8 @@ class AdminService {
     this._pool = new Pool()
   }
 
-  async addAdmin ({ username, password, fullname }) {
+  async addAdmin ({ username, password, confPassword, fullname }) {
+    await this.verifyPassword(password, confPassword)
     await this.verifyNewUsername(username)
 
     const id = `admin-${nanoid(8)}`
@@ -38,7 +39,7 @@ class AdminService {
 
     if (!result.rows.length) throw new NotFoundError('Admin tidak ditemukan')
 
-    return result.rows
+    return result.rows[0]
   }
 
   async getAdminByUsername ({ username }) {
@@ -51,7 +52,11 @@ class AdminService {
 
     if (!result.rows.length) throw new NotFoundError('Admin tidak ditemukan')
 
-    return result.rows
+    return result.rows[0]
+  }
+
+  async verifyPassword (password, confPassword) {
+    if (password !== confPassword) throw new InvariantError('Password dan Konfirmasi password tidak cocok')
   }
 
   async verifyNewUsername (username) {
@@ -62,7 +67,7 @@ class AdminService {
 
     const result = await this._pool.query(query)
 
-    if (result.rows.length > 0) throw new InvariantError('Gagal menambahkan admin. Username sudah digunakan')
+    if (result.rows.length > 0) throw new InvariantError('Username sudah digunakan')
   }
 
   async verifyCredential (username, password) {
@@ -84,12 +89,15 @@ class AdminService {
     return id
   }
 
-  async editAdminByid (id, { username, password, fullname }) {
+  async editAdminById (id, { username, password, confPassword, fullname }) {
+    await this.verifyPassword(password, confPassword)
+    await this.verifyNewUsername(username)
+
     const updatedAt = new Date().toISOString()
     const hashedPassword = await bcryptjs.hash(password, 10)
 
     const query = {
-      text: 'UPDATE admin SET username = $1, password = $2, fullname = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL',
+      text: 'UPDATE admin SET username = $1, password = $2, fullname = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL RETURNING id',
       values: [username, hashedPassword, fullname, updatedAt, id]
     }
 
@@ -101,7 +109,7 @@ class AdminService {
   async deleteAdminById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE admin SET deleted_at = $1 WHERE id = $1 AND deleted_at IS NULL',
+      text: 'UPDATE admin SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
       values: [deletedAt, id]
     }
 
