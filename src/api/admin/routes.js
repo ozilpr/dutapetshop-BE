@@ -11,7 +11,7 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/admin/{username}',
+    path: '/admin',
     handler: handler.getAdminByUsernameHandler
   },
   {

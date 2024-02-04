@@ -34,7 +34,7 @@ class adminHandler {
   }
 
   async getAdminByUsernameHandler (request) {
-    const admin = await this._service.getAdminByUsername(request.params)
+    const admin = await this._service.getAdminByUsername(request.query)
 
     return {
       status: 'success',
@@ -46,7 +46,6 @@ class adminHandler {
 
   async editAdminByIdHandler (request) {
     const { id } = request.params
-
     await this._service.editAdminById(id, request.payload)
 
     return {
@@ -57,7 +56,6 @@ class adminHandler {
 
   async deleteAdminByIdHandler (request) {
     const { id } = request.params
-
     await this._service.deleteAdminById(id)
 
     return {
