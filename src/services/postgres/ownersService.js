@@ -39,7 +39,7 @@ class OwnersService {
 
     if (!result.rows.length) throw new NotFoundError('Owner tidak ditemukan')
 
-    return result.rows
+    return result.rows[0]
   }
 
   async editOwnerById (id, { registerCode, name, phone }) {

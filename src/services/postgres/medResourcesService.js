@@ -41,7 +41,7 @@ class MedResourcesService {
 
     if (!result.rows.length) throw new NotFoundError('Resource tidak ditemukan')
 
-    return result.rows
+    return result.rows[0]
   }
 
   async editResourceById (id, { name, description, type, price }) {

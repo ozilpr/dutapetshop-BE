@@ -39,7 +39,7 @@ class PetsService {
 
     if (!result.rows.length) throw new NotFoundError('Peliharaan tidak ditemukan')
 
-    return result.rows
+    return result.rows[0]
   }
 
   async editPetById (id, { name, type, race, gender, birthdate }) {

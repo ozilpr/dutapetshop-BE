@@ -112,7 +112,7 @@ class TransactionsService {
 
     if (!result.rows.length) throw new NotFoundError('Transaksi tidak ditemukan')
 
-    return result.rows
+    return result.rows[0]
   }
 
   async getTransactionDetailById (id) {
@@ -140,7 +140,7 @@ class TransactionsService {
 
     if (!result.rows.length) throw new NotFoundError('Detail transaksi tidak ditemukan')
 
-    return result.rows
+    return result.rows[0]
   }
 
   async getTransactionDetailByOwnerId (ownerId) {
@@ -168,7 +168,7 @@ class TransactionsService {
 
     if (!result.rows.length) throw new NotFoundError('Detail transaksi tidak ditemukan')
 
-    return result.rows
+    return result.rows[0]
   }
 
   async editTransactionById (id, { resourceId, quantity, price }) {
