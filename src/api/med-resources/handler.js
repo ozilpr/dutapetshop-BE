@@ -62,7 +62,7 @@ class MedResourcesHandler {
 
     return {
       status: 'success',
-      message: 'Catatan berhasil dihapus'
+      message: 'Resource berhasil dihapus'
     }
   }
 }
