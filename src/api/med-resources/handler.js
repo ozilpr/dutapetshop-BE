@@ -48,7 +48,7 @@ class MedResourcesHandler {
   async editResourceByIdHandler (request) {
     const { id } = request.params
 
-    this._service.editResourceById(id, request.payload)
+    await this._service.editResourceById(id, request.payload)
 
     return {
       status: 'success',
@@ -58,7 +58,7 @@ class MedResourcesHandler {
 
   async deleteResourceByIdHandler (request) {
     const { id } = request.params
-    this._service.deleteResourceById(id)
+    await this._service.deleteResourceById(id)
 
     return {
       status: 'success',
