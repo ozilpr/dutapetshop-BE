@@ -1,4 +1,4 @@
-# API Spec
+# API Spec (unfinished)
 
 ## Admin
 
@@ -8,8 +8,8 @@ Request:
 - Method : POST
 - Endpoint : `/admin`
 - Header :
-  - Content-Type: application/json
-  - Accept: application/json
+  - Content-Type : application/json
+  - Accept : application/json
 - Body :
 ```json
 {
@@ -23,28 +23,77 @@ Request:
 Response :
 ```json
 {
-  "status" : "success",
+  "status" : "string",
+  "message" : "string",
   "data" : {
     "id": "string, unique"
   }
 }
 ```
 
-### Get Admin
+### Get Admin by Id
 
 Request :
-- Method : GET
+- Method : Get
 - Endpoint : `/admin/{id}`
 - Header : 
   - Accept : application/json
 
 Response :
-
 ```json
-  {
-    "status": "string",
-    "message": "string"
+{
+  "status" : "string",
+  "data" : {
+    "id" : "string, unique",
+    "username" : "string, unique",
+    "fullname" : "string"
   }
+}
+```
+
+### Get Admin by Username
+
+Request :
+- Method : Get
+- Endpoint : `/admin?username={username}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data" : {
+    "id" : "string, unique",
+    "username" : "string, unique",
+    "fullname" : "string"
+  }
+}
+
+### Edit Admin by Id
+
+Request :
+- Method : Put
+- Endpoint : `/resource/{id}`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+  "username" : "string, unique",
+  "password" : "string",
+  "confPassword" : "string",
+  "fullname" : "string"
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
 ```
 
 ### Delete Admin
@@ -52,14 +101,14 @@ Response :
 Request :
 - Method : Delete
 - Endpoint : `/admin/{id}`
-- Header : 
-  - Content-Type : application/json
+- Header :
+  - Accept : application/json
 
 Response :
 ```json
 {
-  "status": "string",
-  "message": "string"
+  "status" : "string",
+  "message" : "string"
 }
 ```
 
@@ -68,7 +117,7 @@ Response :
 ### Create Authentication
 
 Request :
-- Method : Get
+- Method : Post
 - Endpoint : `/authentication`
 - Header :
   - Content-Type : application/json
@@ -76,24 +125,71 @@ Request :
 - Body :
 ```json
 {
-  "username": "string",
-  "password": "string"
+  "username" : "string",
+  "password" : "string"
 }
 ```
+
 - Response :
 ```json
 {
-  "status": "string",
-  "message": "string",
-  "data": {
-    "accessToken": "string",
-    "refreshToken": "string"
+  "status" : "string",
+  "message" : "string",
+  "data" : {
+    "accessToken" : "string",
+    "refreshToken" : "string"
   }
 }
 ```
 
-### Refresh Authentication
+### Update Authentication
+
+Request
 - Method : Put
+- Endpoint : `/authentication`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+  "reFreshToken" : "string"
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string",
+  "data" : {
+    "accessToken" : "string"
+  }
+}
+```
+
+### Delete Authentication
+
+Request :
+- Method : Delete
+- Endpoint : `/authenticaion/{id}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+## Resources (unfinished)
+
+### Create Resource
+
+Request : 
+- Method : POST
 - Endpoint : `/resource`
 - Header :
   - Content-Type : application/json
@@ -101,6 +197,240 @@ Request :
 - Body :
 ```json
 {
-
+  "name" : "string",
+  "description" : "string",
+  "type" : "string",
+  "price" : "integer"
 }
 ```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+### Get Resources
+
+Request :
+- Method : GET
+- Endpoint : `/resource`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data": [
+    {
+      "id" : "string, unique",
+      "name" : "string",
+      "description" : "string",
+      "type" : "string",
+      "price" : "integer",
+      "created_at" : "string"
+    },
+    {
+      "id" : "string, unique",
+      "name" : "string",
+      "description" : "string",
+      "type" : "string",
+      "price" : "integer",
+      "created_at" : "string"
+    }
+  ]
+}
+```
+
+### Get Resource by Id
+
+Request : 
+- Method : Get
+- Endpoint : `/resource/{id}`
+- Header :
+  - Accept : application/json
+
+Response : 
+```json
+{
+  "status" : "string",
+  "data" : {
+    "id" : "string, unique",
+    "name" : "string",
+    "description" : "string",
+    "type" : "string",
+    "price" : "integer",
+    "created_at" : "string"
+  }
+}
+```
+
+### Update Resource by Id
+
+Request : 
+- Method : Put
+- Endpoint : `/resource/{id}`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+    "name" : "string",
+    "description" : "string",
+    "type" : "string",
+    "price" : "integer",
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+### Delete Resource
+
+Request :
+- Method : Delete
+- Endpoint : `/resource/{id}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+## Owners (unfinished)
+
+### Create Owner
+
+Request :
+- Method : Post
+- Endpoint : `/owner`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+  "registerCode" : "string",
+  "name" : "string",
+  "phone" : "string"
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string",
+  "data" : {
+    "ownerId" : "string"
+  }
+}
+```
+
+### Get Owners
+
+Request :
+- Method : Get
+- Endpoint : `/owner`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data": [
+    {
+      "id" : "string, unique",
+      "register_code" : "string, unique",
+      "name" : "string",
+      "phone" : "string",
+      "created_at" : "string"
+    },
+    {
+      "id" : "string, unique",
+      "register_code" : "string, unique",
+      "name" : "string",
+      "phone" : "string",
+      "created_at" : "string"
+    }
+  ]
+}
+```
+
+### Get Owner by Id (unfinished)
+
+Request :
+- Method : Get
+- Endpoint : `/owner/{id}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data" : {
+    "id" : "string, unique",
+    "register_code" : "string, unique",
+    "name" : "string",
+    "phone" : "string",
+    "created_at" : "string"
+  }
+}
+```
+
+### Update Owner by Id (unfinished)
+
+Request :
+- Method : Put
+- Endpoint : `/owner/{id}`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+  "registerCode" : "string, unique",
+  "name" : "string",
+  "phone" : "string",
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+### Delete Owner by Id
+
+Request :
+- Method : Delete
+- Endpoint : `/owner/{id}`
+- Header : 
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
