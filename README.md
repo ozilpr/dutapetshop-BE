@@ -69,7 +69,7 @@ Response :
     "fullname" : "string"
   }
 }
-
+```
 ### Update Admin by Id
 
 Request :
@@ -566,6 +566,3 @@ Response :
   "message" : "string"
 }
 ```
-
-## Transaction (unfinished)
-
