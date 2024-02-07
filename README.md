@@ -70,7 +70,7 @@ Response :
   }
 }
 
-### Edit Admin by Id
+### Update Admin by Id
 
 Request :
 - Method : Put
@@ -433,4 +433,139 @@ Response :
   "message" : "string"
 }
 ```
+
+## Pets (unfinished)
+
+### Create Pet
+
+Request :
+- Method : Post
+- Endpoint : `/pet`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+  "name" : "string",
+  "type" : "string",
+  "race" : "string",
+  "gender" : "string",
+  "birthdate" : "string"
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string",
+  "data" : {
+    "petId" : "string, unique"
+  }
+}
+```
+
+### Get Pets
+
+Request :
+- Method : Get
+- Endpoint : `/pet`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data" : [
+    {
+      "id" : "string, unique",
+      "name" : "string",
+      "type" : "string",
+      "race" : "string",
+      "gender" : "string",
+      "birthdate" : "string",
+      "created_at" : "string"
+    },
+    {
+      "id" : "string, unique",
+      "name" : "string",
+      "type" : "string",
+      "race" : "string",
+      "gender" : "string",
+      "birthdate" : "string",
+      "created_at" : "string"
+    }
+  ]
+}
+```
+
+### Get Pet by Id
+
+Request :
+- Method : Get
+- Endpoint : `/pet/{id}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data" : {
+    "id" : "string, unique",
+    "name" : "string",
+    "type" : "string",
+    "race" : "string",
+    "gender" : "string",
+    "birthdate" : "string",
+    "created_at" : "string"
+  }
+}
+```
+
+### Update Pet by Id
+
+Request :
+- Method : Put
+- Endpoint : `/pet/{id}`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+  "name" : "string",
+  "gender" : "string",
+  "type" : "string",
+  "birhtdate" : "string",
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string",
+}
+```
+
+### Delete Pet by Id
+
+Request :
+- Method : Delete
+- Endpoint : `/pet/{id}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+## Transaction (unfinished)
 
