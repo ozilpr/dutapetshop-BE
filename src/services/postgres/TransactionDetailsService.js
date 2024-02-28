@@ -9,7 +9,7 @@ class TransactionDetailsService {
   }
 
   async addTransactionDetail ({ transactionId, ownerId }) {
-    const id = `transactiondetail-${nanoid(8)}`
+    const id = `tdetail-${nanoid(8)}`
     const transactionDate = new Date().toISOString()
     const client = await this._pool.connect()
 
