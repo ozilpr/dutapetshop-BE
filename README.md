@@ -876,37 +876,6 @@ Response :
 }
 ```
 
-### List Pet Owner
-
-Request :
-- Method : Get
-- Endpoint : `/pet-owner`
-- Header :
-  - Accept : application/json
-
-Response :
-```json
-{
-  "status" : "string",
-  "message" : "string",
-  "data" : {
-    "id" : "string, unique",
-    "owner_id" : "string, unique",
-    "owner_name" : "string, unique",
-    "pets" : [
-      {
-        "pet_id" : "string, unique",
-        "pet_name" : "string"
-      },
-      {
-        "pet_id" : "string, unique",
-        "pet_name" : "string"
-      }
-    ]
-  }
-}
-```
-
 ### Get Pet Owner by Id
 
 Request : 
