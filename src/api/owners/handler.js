@@ -32,6 +32,17 @@ class OwnersHandler {
     }
   }
 
+  async getOwnerByIdHandler () {
+    const owner = await this._service.getOwnerById()
+
+    return {
+      status: 'success',
+      data: {
+        owner
+      }
+    }
+  }
+
   async editOwnerByIdHandler (request) {
     const { id } = request.params
 
