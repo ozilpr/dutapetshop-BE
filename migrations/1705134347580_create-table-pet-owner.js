@@ -1,5 +1,10 @@
 exports.up = pgm => {
   pgm.createTable('pet_owner', {
+    id: {
+      type: 'VARCHAR(30)',
+      primaryKey: true,
+      notNull: true
+    },
     owner_id: {
       type: 'VARCHAR(30)',
       notNull: true
