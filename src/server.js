@@ -26,12 +26,20 @@ const authentications = require('./api/authentications')
 const AuthenticationsService = require('./services/postgres/AuthenticationsService')
 const TokenManager = require('./tokenize/TokenManager')
 
+const transactions = require('./api/transactions')
+const TransactionsService = require('./services/postgres/TransactionsService')
+
+const transactionDetails = require('./api/transaction-details')
+const TransactionDetailsService = require('./services/postgres/TransactionDetailsService')
+
 const init = async () => {
   const resourcesService = new ResourcesService()
   const ownersService = new OwnersService()
   const petsService = new PetsService()
   const adminService = new AdminService()
   const authenticationsService = new AuthenticationsService()
+  const transactionsService = new TransactionsService()
+  const transactionDetailsService = new TransactionDetailsService()
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -67,6 +75,14 @@ const init = async () => {
 
   await server.register([
     {
+      plugin: authentications,
+      options: {
+        authenticationsService,
+        adminService,
+        tokenManager: TokenManager
+      }
+    },
+    {
       plugin: resources,
       options: {
         service: resourcesService
@@ -91,11 +107,15 @@ const init = async () => {
       }
     },
     {
-      plugin: authentications,
+      plugin: transactions,
       options: {
-        authenticationsService,
-        adminService,
-        tokenManager: TokenManager
+        service: transactionsService
+      }
+    },
+    {
+      plugin: transactionDetails,
+      options: {
+        service: transactionDetailsService
       }
     }
   ])
