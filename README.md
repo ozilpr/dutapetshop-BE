@@ -907,30 +907,6 @@ Response :
 }
 ```
 
-### Update Pet Owner by Id
-
-Request :
-- Method : Put
-- Endpoint : `/pet-owner/{id}`
-- Header :
-  - Content-Type : application/json
-  - Accept : application/json
-- Body :
-```json
-{
-  "ownerId" : "string, unique",
-  "petId" : "string, unique"
-}
-```
-
-Response :
-```json
-{
-  "status" : "string",
-  "message" : "string"
-}
-```
-
 ### Delete Pet Owner by Id
 
 Request :
