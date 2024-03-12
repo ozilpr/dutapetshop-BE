@@ -13,7 +13,7 @@ class AdminService {
   async addAdmin ({ username, password, confPassword, fullname }) {
     await this.verifyPassword(password, confPassword)
     await this.verifyNewUsername(username)
-
+    console.log(username)
     const id = `admin-${nanoid(8)}`
     const createdAt = new Date().toISOString()
     const hashedPassword = await bcryptjs.hash(password, 10)
@@ -65,9 +65,34 @@ class AdminService {
       values: [username]
     }
 
-    const result = await this._pool.query(query)
+    try {
+      const result = await this._pool.query(query)
 
-    if (result.rows.length > 0) throw new InvariantError('Username sudah digunakan')
+      if (result.rows.length > 0) throw new InvariantError('Username sudah digunakan')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  async verifyEditNewUsername (username, id) {
+    const query = {
+      text: 'SELECT username FROM admin WHERE username LIKE $1 AND deleted_at IS NULL',
+      values: [username]
+    }
+
+    const queryFind = {
+      text: 'SELECT username FROM admin WHERE id = $1 AND deleted_at IS NULL',
+      values: [id]
+    }
+
+    const result = await this._pool.query(query)
+    const found = await this._pool.query(queryFind)
+
+    if (found.rows[0].username === username) {
+      return true
+    } else if (result.rows.length > 0) {
+      throw new InvariantError('Username sudah digunakan')
+    }
   }
 
   async verifyCredential (username, password) {
@@ -91,7 +116,7 @@ class AdminService {
 
   async editAdminById (id, { username, password, confPassword, fullname }) {
     await this.verifyPassword(password, confPassword)
-    await this.verifyNewUsername(username)
+    await this.verifyEditNewUsername(username, id)
 
     const updatedAt = new Date().toISOString()
     const hashedPassword = await bcryptjs.hash(password, 10)
