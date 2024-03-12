@@ -45,7 +45,7 @@ class PetsService {
   async editPetById (id, { name, type, race, gender, birthdate }) {
     const updatedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE pets SET name = $1, type = $2, race = $3, gender = $4, birthdate = $5, updated_at = $6 WHERE id = $1 AND deleted_at IS NULL',
+      text: 'UPDATE pets SET name = $1, type = $2, race = $3, gender = $4, birthdate = $5, updated_at = $6 WHERE id = $7 AND deleted_at IS NULL RETURNING id',
       values: [name, type, race, gender, birthdate, updatedAt, id]
     }
 
@@ -57,7 +57,7 @@ class PetsService {
   async deletePetById (id) {
     const deletedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE pets SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL',
+      text: 'UPDATE pets SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
       values: [deletedAt, id]
     }
 
