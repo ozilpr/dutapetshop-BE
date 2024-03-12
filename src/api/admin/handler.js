@@ -1,13 +1,16 @@
 const autoBind = require('auto-bind')
 
 class adminHandler {
-  constructor (service) {
+  constructor (service, validator) {
     this._service = service
+    this._validator = validator
 
     autoBind(this)
   }
 
   async addAdminHandler (request, h) {
+    await this._validator.validateAdminPayload(request.payload)
+
     const adminId = await this._service.addAdmin(request.payload)
 
     const response = h.response({
@@ -45,6 +48,8 @@ class adminHandler {
   }
 
   async editAdminByIdHandler (request) {
+    await this._validator.validateAdminPayload(request.payload)
+
     const { id } = request.params
     await this._service.editAdminById(id, request.payload)
 

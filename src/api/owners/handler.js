@@ -1,13 +1,16 @@
 const autoBind = require('auto-bind')
 
 class OwnersHandler {
-  constructor (service) {
+  constructor (service, validator) {
     this._service = service
+    this._validator = validator
 
     autoBind(this)
   }
 
   async addOwnerHandler (request, h) {
+    await this._validator.validateOwnerPayload(request.payload)
+
     const ownerId = await this._service.addOwner(request.payload)
 
     const response = h.response({
@@ -32,8 +35,8 @@ class OwnersHandler {
     }
   }
 
-  async getOwnerByIdHandler () {
-    const owner = await this._service.getOwnerById()
+  async getOwnerByIdHandler (request) {
+    const owner = await this._service.getOwnerById(request.params)
 
     return {
       status: 'success',
@@ -44,6 +47,7 @@ class OwnersHandler {
   }
 
   async editOwnerByIdHandler (request) {
+    await this._validator.validateOwnerPayload(request.payload)
     const { id } = request.params
 
     await this._service.editOwnerById(id, request.payload)

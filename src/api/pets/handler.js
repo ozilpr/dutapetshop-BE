@@ -1,13 +1,16 @@
 const autoBind = require('auto-bind')
 
 class PetsHandler {
-  constructor (service) {
+  constructor (service, validator) {
     this._service = service
+    this._validator = validator
 
     autoBind(this)
   }
 
   async addPetHandler (request, h) {
+    await this._validator.validatePetPayload(request.payload)
+
     const petId = await this._service.addPet(request.payload)
 
     const response = h.response({
@@ -45,6 +48,8 @@ class PetsHandler {
   }
 
   async editPetByIdHandler (request) {
+    await this._validator.validatePetPayload(request.payload)
+
     const { id } = request.params
 
     await this._service.editPetById(id, request.payload)

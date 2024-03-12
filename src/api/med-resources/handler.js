@@ -1,13 +1,16 @@
 const autoBind = require('auto-bind')
 
 class MedResourcesHandler {
-  constructor (service) {
+  constructor (service, validator) {
     this._service = service
+    this._validator = validator
 
     autoBind(this)
   }
 
   async addResourceHandler (request, h) {
+    await this._validator.validateMedResourcePayload(request.payload)
+
     const { name, description = 'no description', type, price } = request.payload
 
     const resourceId = await this._service.addResource({ name, description, type, price })
@@ -35,7 +38,7 @@ class MedResourcesHandler {
   }
 
   async getResourceByIdHandler (request) {
-    const { id } = request.payload
+    const { id } = request.params
     const resource = await this._service.getResourceById(id)
     return {
       status: 'success',
@@ -46,6 +49,8 @@ class MedResourcesHandler {
   }
 
   async editResourceByIdHandler (request) {
+    await this._validator.validateMedResourcePayload(request.payload)
+
     const { id } = request.params
 
     await this._service.editResourceById(id, request.payload)

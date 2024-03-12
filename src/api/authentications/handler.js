@@ -1,15 +1,18 @@
 const autoBind = require('auto-bind')
 
 class AuthenticationsHandler {
-  constructor (authenticationsService, adminService, tokenManager) {
+  constructor (authenticationsService, adminService, tokenManager, validator) {
     this._authenticationsService = authenticationsService
     this._adminService = adminService
     this._tokenManager = tokenManager
+    this._validator = validator
 
     autoBind(this)
   }
 
   async postAuthenticationHandler (request, h) {
+    await this._validator.validateAuthenticationPayload(request.payload)
+
     const { username, password } = request.payload
     const id = await this._adminService.verifyCredential(username, password)
 

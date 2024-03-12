@@ -6,40 +6,48 @@ const Jwt = require('@hapi/jwt')
 const ClientError = require('./exceptions/ClientError')
 
 // medical resources
-const resources = require('./api/med-resources')
-const ResourcesService = require('./services/postgres/MedResourcesService')
+const medresources = require('./api/med-resources')
+const MedResourcesService = require('./services/postgres/MedResourcesService')
+const MedResourcesValidator = require('./validator/med-resources')
 
 // owners
 const owners = require('./api/owners')
 const OwnersService = require('./services/postgres/OwnersService')
+const OwnersValidator = require('./validator/owners')
 
 // pets
 const pets = require('./api/pets')
 const PetsService = require('./services/postgres/PetsService')
+const PetsValidator = require('./validator/pets')
 
 // admin
 const admin = require('./api/admin')
 const AdminService = require('./services/postgres/AdminService')
+const AdminValidator = require('./validator/admin')
 
 // authentications
 const authentications = require('./api/authentications')
 const AuthenticationsService = require('./services/postgres/AuthenticationsService')
 const TokenManager = require('./tokenize/TokenManager')
+const AuthenticationsValidator = require('./validator/authentications')
 
+// transactions
 const transactions = require('./api/transactions')
 const TransactionsService = require('./services/postgres/TransactionsService')
+const TransactionsValidator = require('./validator/transactions')
 
-const transactionDetails = require('./api/transaction-details')
-const TransactionDetailsService = require('./services/postgres/TransactionDetailsService')
+// pet owner
+const petOwner = require('./api/pet-owner')
+const PetOwnerService = require('./services/postgres/PetOwnerService')
 
 const init = async () => {
-  const resourcesService = new ResourcesService()
+  const resourcesService = new MedResourcesService()
   const ownersService = new OwnersService()
   const petsService = new PetsService()
   const adminService = new AdminService()
   const authenticationsService = new AuthenticationsService()
   const transactionsService = new TransactionsService()
-  const transactionDetailsService = new TransactionDetailsService()
+  const petOwnerService = new PetOwnerService()
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -65,12 +73,7 @@ const init = async () => {
       sub: false,
       maxAgeSec: process.env.ACCESS_TOKEN_AGE
     },
-    validate: (artifacts) => ({
-      isValid: true,
-      credentials: {
-        id: artifacts.decoded.payload.id
-      }
-    })
+    validate: false
   })
 
   await server.register([
@@ -79,43 +82,49 @@ const init = async () => {
       options: {
         authenticationsService,
         adminService,
-        tokenManager: TokenManager
+        tokenManager: TokenManager,
+        validator: AuthenticationsValidator
       }
     },
     {
-      plugin: resources,
+      plugin: medresources,
       options: {
-        service: resourcesService
+        service: resourcesService,
+        validator: MedResourcesValidator
       }
     },
     {
       plugin: owners,
       options: {
-        service: ownersService
+        service: ownersService,
+        validator: OwnersValidator
       }
     },
     {
       plugin: pets,
       options: {
-        service: petsService
+        service: petsService,
+        validator: PetsValidator
       }
     },
     {
       plugin: admin,
       options: {
-        service: adminService
+        service: adminService,
+        validator: AdminValidator
       }
     },
     {
       plugin: transactions,
       options: {
-        service: transactionsService
+        service: transactionsService,
+        validator: TransactionsValidator
       }
     },
     {
-      plugin: transactionDetails,
+      plugin: petOwner,
       options: {
-        service: transactionDetailsService
+        service: petOwnerService
       }
     }
   ])
