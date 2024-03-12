@@ -47,7 +47,7 @@ class MedResourcesService {
   async editResourceById (id, { name, description, type, price }) {
     const updatedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE med_resources SET name = $1, description = $2, type = $3, price = $4 updated_at = $5 WHERE id = $6 AND deleted_at IS NULL RETURNING id',
+      text: 'UPDATE med_resources SET name = $1, description = $2, type = $3, price = $4, updated_at = $5 WHERE id = $6 AND deleted_at IS NULL RETURNING id',
       values: [name, description, type, price, updatedAt, id]
     }
 
