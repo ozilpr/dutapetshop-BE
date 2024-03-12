@@ -15,7 +15,7 @@ exports.up = pgm => {
     },
     phone: {
       type: 'VARCHAR(15)',
-      notNull: true
+      notNull: false
     },
     created_at: {
       type: 'TEXT',
