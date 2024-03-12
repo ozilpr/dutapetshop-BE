@@ -2,10 +2,7 @@ exports.up = pgm => {
   pgm.createTable('transaction_details', {
     id: {
       type: 'VARCHAR(30)',
-      notNull: true
-    },
-    transaction_id: {
-      type: 'VARCHAR(30)',
+      primaryKey: true,
       notNull: true
     },
     owner_id: {
@@ -27,17 +24,6 @@ exports.up = pgm => {
     }
   }, { ifNotExists: true })
 
-  pgm.addConstraint('transaction_details', 'fk_transaction_details.transaction_id_transactions.id', {
-    foreignKeys: {
-      columns: 'transaction_id',
-      references: 'transactions(id)',
-      onDelete: 'CASCADE',
-      exclude: {
-        where: 'deleted_at IS NULL'
-      }
-    }
-  }, { ifNotExists: true })
-
   pgm.addConstraint('transaction_details', 'fk_transaction_details.owner_id_owners.id', {
     foreignKeys: {
       columns: 'owner_id',
@@ -52,6 +38,5 @@ exports.up = pgm => {
 
 exports.down = pgm => {
   pgm.dropConstraint('transaction_details', 'fk_transaction_details.owner_id_owners.id', { ifExists: true })
-  pgm.dropConstraint('transaction_details', 'fk_transaction_details.transaction_id_transactions.id', { ifExists: true })
   pgm.dropTable('transaction_details', { ifExists: true })
 }
