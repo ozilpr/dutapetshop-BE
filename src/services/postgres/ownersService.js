@@ -4,19 +4,20 @@ const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
 
 class OwnersService {
-  constructior () {
+  constructor () {
     this._pool = new Pool()
   }
 
   async addOwner ({ registerCode, name, phone }) {
     const id = `owner-${nanoid(8)}`
     const createdAt = new Date().toISOString()
+
     const query = {
       text: 'INSERT INTO owners VALUES($1, $2, $3, $4, $5) RETURNING id',
       values: [id, registerCode, name, phone, createdAt]
     }
 
-    const result = this._pool.query(query)
+    const result = await this._pool.query(query)
 
     if (!result.rows[0].id) throw new InvariantError('Owner gagal ditambahkan')
 
@@ -24,14 +25,14 @@ class OwnersService {
   }
 
   async getOwners () {
-    const result = this._pool.query('SELECT id, register_code, name, phone, created_at FROM med_resources WHERE deleted_at IS NULL')
+    const result = await this._pool.query('SELECT id, register_code, name, phone, created_at FROM owners WHERE deleted_at IS NULL')
 
     return result.rows
   }
 
-  async getOwnerById (id) {
+  async getOwnerById ({ id }) {
     const query = {
-      text: 'SELECT id, register_code, name, phone, created_at FROM med_resources WHERE id = $1 AND deleted_at IS NULL',
+      text: 'SELECT id, register_code, name, phone, created_at FROM owners WHERE id = $1 AND deleted_at IS NULL',
       values: [id]
     }
 
@@ -45,7 +46,7 @@ class OwnersService {
   async editOwnerById (id, { registerCode, name, phone }) {
     const updatedAt = new Date().toISOString()
     const query = {
-      text: 'UPDATE owners SET register_code = $1, name = $2, phone = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL',
+      text: 'UPDATE owners SET register_code = $1, name = $2, phone = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL RETURNING id',
       values: [registerCode, name, phone, updatedAt, id]
     }
 
