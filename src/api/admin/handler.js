@@ -1,6 +1,6 @@
 const autoBind = require('auto-bind')
 
-class adminHandler {
+class AdminHandler {
   constructor (service, validator) {
     this._service = service
     this._validator = validator
@@ -70,4 +70,4 @@ class adminHandler {
   }
 }
 
-module.exports = adminHandler
+module.exports = AdminHandler
