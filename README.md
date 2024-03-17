@@ -173,9 +173,16 @@ Response :
 
 Request :
 - Method : Delete
-- Endpoint : `/authenticaion/{id}`
+- Endpoint : `/authentication`
 - Header :
+  - Content-Type : application/json
   - Accept : application/json
+- Body :
+```json
+{
+  "refreshToken" : "string"
+}
+```
 
 Response :
 ```json
@@ -210,7 +217,10 @@ Response :
 ```json
 {
   "status" : "string",
-  "message" : "string"
+  "message" : "string",
+  "data" : {
+    "resourceId" : "string, unique"
+  }
 }
 ```
 
@@ -539,8 +549,9 @@ Request :
 ```json
 {
   "name" : "string",
-  "gender" : "string",
   "type" : "string",
+  "race" : "string",
+  "gender" : "string",
   "birhtdate" : "string",
 }
 ```
@@ -558,285 +569,6 @@ Response :
 Request :
 - Method : Delete
 - Endpoint : `/pet/{id}`
-- Header :
-  - Accept : application/json
-
-Response :
-```json
-{
-  "status" : "string",
-  "message" : "string"
-}
-```
-
-## Transactions (unfinished)
-
-### Create Transaction
-
-Request :
-- Method : Post
-- Endpoint : `/transaction`
-- Header : 
-  - Content-Type : application/json
-  - Accept : application/json
-- Body :
-```json
-{
-  "resourceId" : "string, unique",
-  "quantity" : "integer",
-  "price" : "integer"
-}
-
-Response : 
-```json
-{
-  "status" : "string",
-  "message" : "string",
-  "data" : {
-    "transactionId" : "string, unique"
-  }
-}
-```
-
-### List Transactions
-
-Request :
-- Method : Get
-- Endpoint : `/transaction`
-- Header :
-  - Accept : application/json
-
-Response :
-```json
-{
-  "status" : "string",
-  "data" : [
-    {
-      "id" : "string, unique",
-      "resource_id" : "string, unique",
-      "resource_name" : "string",
-      "quantity" : "integer",
-      "price" : "integer",
-      "created_at" : "string"
-    },
-    {
-      "id" : "string, unique",
-      "resource_id" : "string, unique",
-      "resource_name" : "string",
-      "quantity" : "integer",
-      "price" : "integer",
-      "created_at" : "string"
-    }
-  ]
-}
-```
-
-### Get Transaction by Id
-
-Request : 
-- Method : Get
-- Endpoint : `/transaction/{id}`
-- Header : 
-  - Accept : application/json
-
-Response :
-```json
-{
-  "status" : "string",
-  "data" : {
-      "id" : "string, unique",
-      "resource_id" : "string, unique",
-      "resource_name" : "string",
-      "quantity" : "integer",
-      "price" : "integer",
-      "created_at" : "string"
-    }
-}
-```
-
-### Update Transaction by Id
-
-Request :
-- Method : Put
-- Endpoint : `/transaction/{id}`
-- Header : 
-  - Accept : application/json
-- Body :
-```json
-{
-  "resourceId" : "string, unique",
-  "quantity" : "integer",
-  "price" : "integer"
-}
-```
-Response :
-```json
-{
-  "status" : "string",
-  "message" : "string"
-}
-```
-
-### Delete Transaction by Id
-
-Request :
-- Method : Delete
-- Endpoint : `/transaction/{id}`
-- Header : 
-  - Accept : application/json
-
-Response :
-```json
-{
-  "status" : "string",
-  "message" : "string"
-}
-```
-
-## Transaction Details (unfinished)
-
-### Create Transaction Detail
-
-Request :
-- Method : Post
-- Endpoint : `/transaction-detail`
-- Header :
-  - Content-Type : application/json
-  - Accept : application/json
-- Body :
-```json
-{
-  "transactionId" : "string, unique",
-  "ownerId" : "string, unique"
-}
-```
-
-Response : 
-```json
-{
-  "status" : "string",
-  "message" : "string",
-  "data" : {
-    "transactionDetailId" : "string, unique"
-  }
-}
-```
-
-### List Transaction Details
-Request :
-- Method : Get
-- Endpoint : `/transaction-detail`
-- Header :
-  - Accept : application/json
-
-Response :
-```json
-{
-  "status" : "string",
-  "data" : [
-    {
-      "id" : "string, unique",
-      "resource_name" : "string",
-      "quantity" : "integer",
-      "price" : "integer",
-      "owner_id" : "string, unique",
-      "owner_name" : "string",
-      "register_code" : "string, unique",
-      "phone" : "string"
-    },
-    {
-      "id" : "string, unique",
-      "resource_name" : "string",
-      "quantity" : "integer",
-      "price" : "integer",
-      "owner_id" : "string, unique",
-      "owner_name" : "string",
-      "register_code" : "string, unique",
-      "phone" : "string"
-    }
-  ]
-}
-```
-
-### Get Transaction Detail By Id
-
-Request :
-- Method : Get
-- Endpoint : `/transaction-detail/{id}`
-- Header :
-  - Accept : application/json
-
-Response :
-```json
-{
-  "status" : "string",
-  "data" : {
-    "id" : "string, unique",
-    "resource_name" : "string",
-    "quantity" : "integer",
-    "price" : "integer",
-    "owner_id" : "string, unique",
-    "owner_name" : "string",
-    "register_code" : "string, unique",
-    "phone" : "string"
-  }
-}
-```
-
-### Get Transaction Detail by Owner Id
-
-Request :
-- Method : Get
-- Endpoint : `/transaction-detail/owner/{ownerId}`
-- Header :
-  - Accept : application/json
-
-Response :
-```json
-{
-  "status" : "string",
-  "data" : {
-    "id" : "string, unique",
-    "resource_name" : "string",
-    "quantity" : "integer",
-    "price" : "integer",
-    "owner_id" : "string, unique",
-    "owner_name" : "string",
-    "register_code" : "string, unique",
-    "phone" : "string"
-  }
-}
-```
-
-### Edit Transaction Detail by Id (is this really neccessary? prolly will disable this)
-
-Request :
-- Method : Put
-- Endpoint : `/transaction-detail/{id}`
-- Header :
-  - Content-Type : application/json
-  - Accept : application/json
-- Body :
-```json
-{
-  "transactionId" : "string, unique",
-  "ownerId" : "string, unique"
-}
-```
-
-Response :
-```json
-{
-  "status" : "string",
-  "message" : "string"
-}
-```
-
-### Delete Transaction Detail by Id
-
-Request :
-- Method : Delete
-- Endpoint : `/transaction-detail/{id}`
 - Header :
   - Accept : application/json
 
@@ -913,6 +645,314 @@ Request :
 - Method : Delete
 - Endpoint : `/pet-owner/{id}`
 - Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+## Transactions (unfinished)
+
+### Create Transaction
+
+Request :
+- Method : Post
+- Endpoint : `/transaction`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+  "ownerId" : "string, unique",
+  "transactionData" : [
+    {
+      "resourceId" : "string, unique",
+      "quantity" : "integer"
+    },
+    {
+      "resourceId" : "string, unique",
+      "quantity" : "integer"
+    }
+  ]
+}
+```
+
+Response : 
+```json
+{
+  "status" : "string",
+  "message" : "string",
+  "data" : {
+    "transactionDetailId" : "string, unique",
+     "transactionsId" : [
+      {
+        "trans_id" : "string, unique"
+      },
+      {
+        "trans_id" : "string, unique"
+      }
+    ]
+  }
+}
+```
+
+### List Transaction Details
+Request :
+- Method : Get
+- Endpoint : `/transaction/detail`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data" : [
+    {
+      "transaction_id" : "string, unique",
+      "owner_id" : "string, unique",
+      "owner_name" : "string",
+      "register_code" : "string, unique",
+      "transactionItems" : [
+        {
+          "id" : "string, unique",
+          "resource_name" : "string",
+          "quantity" : "integer",
+          "price" : "integer",
+        },
+        {
+          "id" : "string, unique",
+          "resource_name" : "string",
+          "quantity" : "integer",
+          "price" : "integer",
+        }
+      ]
+    },
+    {
+      "transaction_id" : "string, unique",
+      "owner_id" : "string, unique",
+      "owner_name" : "string",
+      "register_code" : "string, unique",
+      "transactionItems" : [
+        {
+          "id" : "string, unique",
+          "resource_name" : "string",
+          "quantity" : "integer",
+          "price" : "integer",
+        },
+        {
+          "id" : "string, unique",
+          "resource_name" : "string",
+          "quantity" : "integer",
+          "price" : "integer",
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Get Transaction Detail By Id
+
+Request :
+- Method : Get
+- Endpoint : `/transaction/detail/{id}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data" : {
+    "transaction_id" : "string, unique",
+    "owner_id" : "string, unique",
+    "owner_name" : "string",
+    "register_code" : "string, unique",
+    "transactionItems" : [
+      {
+        "id" : "string, unique",
+        "resource_name" : "string",
+        "quantity" : "integer",
+        "price" : "integer",
+      },
+      {
+        "id" : "string, unique",
+        "resource_name" : "string",
+        "quantity" : "integer",
+        "price" : "integer",
+      }
+    ]
+  }
+}
+```
+
+### Get Transaction Detail by Owner Id
+
+Request :
+- Method : Get
+- Endpoint : `/transaction/detail/owner/{ownerId}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data" : [
+    {
+      "transaction_id" : "string, unique",
+      "owner_id" : "string, unique",
+      "owner_name" : "string",
+      "register_code" : "string, unique",
+      "transactionItems" : [
+        {
+          "id" : "string, unique",
+          "resource_name" : "string",
+          "quantity" : "integer",
+          "price" : "integer",
+        },
+        {
+          "id" : "string, unique",
+          "resource_name" : "string",
+          "quantity" : "integer",
+          "price" : "integer",
+        }
+      ]
+    },
+    {
+      "transaction_id" : "string, unique",
+      "owner_id" : "string, unique",
+      "owner_name" : "string",
+      "register_code" : "string, unique",
+      "transactionItems" : [
+        {
+          "id" : "string, unique",
+          "resource_name" : "string",
+          "quantity" : "integer",
+          "price" : "integer",
+        },
+        {
+          "id" : "string, unique",
+          "resource_name" : "string",
+          "quantity" : "integer",
+          "price" : "integer",
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Edit Transaction Detail by Id (is this really neccessary? prolly will disable this)
+
+Request :
+- Method : Put
+- Endpoint : `/transaction/detail/{id}`
+- Header :
+  - Content-Type : application/json
+  - Accept : application/json
+- Body :
+```json
+{
+  "ownerId" : "string, unique"
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+### Delete Transaction Detail by Id
+
+Request :
+- Method : Delete
+- Endpoint : `/transaction/detail/{id}`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+### List Transactions
+
+Request :
+- Method : Get
+- Endpoint : `/transaction`
+- Header :
+  - Accept : application/json
+
+Response :
+```json
+{
+  "status" : "string",
+  "data" : [
+    {
+      "id" : "string, unique",
+      "transaction_id" : "string, unique",
+      "resource_id" : "string, unique",
+      "resource_name" : "string",
+      "quantity" : "integer",
+      "price" : "integer",
+      "created_at" : "string"
+    },
+    {
+      "id" : "string, unique",
+      "transaction_id" : "string, unique",
+      "resource_id" : "string, unique",
+      "resource_name" : "string",
+      "quantity" : "integer",
+      "price" : "integer",
+      "created_at" : "string"
+    }
+  ]
+}
+```
+
+### Update Transaction by Transaction Id
+
+Request :
+- Method : Put
+- Endpoint : `/transaction/{transactionId}`
+- Header : 
+  - Accept : application/json
+- Body :
+```json
+{
+  "resourceId" : "string, unique",
+  "quantity" : "integer",
+  "price" : "integer"
+}
+```
+
+Response :
+```json
+{
+  "status" : "string",
+  "message" : "string"
+}
+```
+
+### Delete Transaction by Id
+
+Request :
+- Method : Delete
+- Endpoint : `/transaction/{id}`
+- Header : 
   - Accept : application/json
 
 Response :
