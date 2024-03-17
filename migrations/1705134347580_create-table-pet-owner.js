@@ -20,11 +20,6 @@ exports.up = pgm => {
     updated_at: {
       type: 'TEXT',
       notNull: false
-    },
-    deleted_at: {
-      type: 'TEXT',
-      notNull: false,
-      default: null
     }
   }, { ifNotExists: true })
 

@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid')
 const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
+const GetLocalTime = require('../../utils/getLocalTime')
 
 class PetOwnerService {
   constructor () {
@@ -21,73 +22,68 @@ class PetOwnerService {
 
   async addPetOwner ({ ownerId, petId }) {
     const id = `powner-${nanoid(8)}`
-    const createdAt = new Date().toString()
+    const createdAt = await new GetLocalTime().getDate()
 
     const query = {
       text: 'INSERT INTO pet_owner VALUES($1, $2, $3, $4) RETURNING id',
       values: [id, ownerId, petId, createdAt]
     }
-    try {
-      const result = await this._pool.query(query)
 
-      if (!result.rows[0].id) throw InvariantError('Kepemilikan peliharaan gagal ditambahkan')
+    const result = await this._pool.query(query)
 
-      return result.rows[0]
-    } catch (error) {
-      console.log(error)
-    }
+    if (!result.rows[0].id) throw InvariantError('Kepemilikan peliharaan gagal ditambahkan')
+
+    return result.rows[0]
   }
 
   async getPetOwnerByOwnerId (ownerId) {
     const queryOwner = {
-      text: `SELECT po.owner_id,
-              o.name AS owner_name
-              FROM pet_owner po
-              JOIN owners o ON po.owner_id = o.id
-              JOIN pets p ON po.pet_id = p.id
-              WHERE po.owner_id = $1
-                AND po.deleted_at IS NULL
-                AND o.deleted_at IS NULL
-                AND p.deleted_at IS NULL`,
+      text: `
+        SELECT
+          po.owner_id,
+          o.name AS owner_name
+        FROM
+          pet_owner po
+          INNER JOIN owners o ON po.owner_id = o.id
+          INNER JOIN pets p ON po.pet_id = p.id
+        WHERE
+          po.owner_id = $1
+      `,
       values: [ownerId]
     }
 
     const queryPet = {
-      text: `SELECT po.id,
-              po.pet_id,
-              p.name AS pet_name
-              FROM pet_owner po
-              JOIN owners o ON po.owner_id = o.id
-              JOIN pets p ON po.pet_id = p.id
-              WHERE po.owner_id = $1
-                AND po.deleted_at IS NULL
-                AND o.deleted_at IS NULL
-                AND p.deleted_at IS NULL`,
+      text: `
+        SELECT
+          po.id,
+          po.pet_id,
+          p.name AS pet_name
+        FROM
+          pet_owner po
+          INNER JOIN owners o ON po.owner_id = o.id
+          INNER JOIN pets p ON po.pet_id = p.id
+        WHERE
+          po.owner_id = $1
+      `,
       values: [ownerId]
     }
 
-    try {
-      const resultOwner = await this._pool.query(queryOwner)
+    const resultOwner = await this._pool.query(queryOwner)
 
-      if (!resultOwner.rows.length) throw new NotFoundError('Owner tidak ditemukan')
+    if (!resultOwner.rows.length) throw new NotFoundError('Owner tidak ditemukan')
 
-      const resultPet = await this._pool.query(queryPet)
+    const resultPet = await this._pool.query(queryPet)
 
-      return ({
-        owner: resultOwner.rows[0],
-        pets: resultPet.rows
-      })
-    } catch (error) {
-      console.log(error)
-    }
+    return ({
+      owner: resultOwner.rows[0],
+      pets: resultPet.rows
+    })
   }
 
   async deletePetOwnerById (id) {
-    const deletedAt = new Date().toISOString()
-
     const query = {
-      text: 'UPDATE pet_owner SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
-      values: [deletedAt, id]
+      text: 'DELETE FROM pet_owner WHERE id = $1 RETURNING id',
+      values: [id]
     }
 
     const result = await this._pool.query(query)
