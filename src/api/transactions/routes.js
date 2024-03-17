@@ -1,7 +1,7 @@
 const routes = (handler) => [
   {
     method: 'POST',
-    path: '/transaction-detail',
+    path: '/transaction/detail',
     handler: handler.addTransactionDetailHandler,
     options: {
       auth: 'dutapetshop_jwt'
@@ -9,7 +9,7 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/transaction-detail',
+    path: '/transaction/detail',
     handler: handler.getTransactionDetailsHandler,
     options: {
       auth: 'dutapetshop_jwt'
@@ -17,7 +17,7 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/transaction-detail/{id}',
+    path: '/transaction/detail/{id}',
     handler: handler.getTransactionDetailByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
@@ -25,7 +25,7 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/transaction-detail/owner/{ownerId}',
+    path: '/transaction/detail/owner/{ownerId}',
     handler: handler.getTransactionDetailByOwnerIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
@@ -33,7 +33,7 @@ const routes = (handler) => [
   },
   {
     method: 'PUT',
-    path: '/transaction-detail/{id}',
+    path: '/transaction/detail/{id}',
     handler: handler.editTransactionDetailByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
@@ -41,7 +41,7 @@ const routes = (handler) => [
   },
   {
     method: 'DELETE',
-    path: '/transaction-detail/{id}',
+    path: '/transaction/detail/{id}',
     handler: handler.deleteTransactionDetailByIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
@@ -64,14 +64,6 @@ const routes = (handler) => [
     }
   },
   {
-    method: 'GET',
-    path: '/transaction/{transactionId}/{id}',
-    handler: handler.getTransactionByTransactionIdHandler,
-    options: {
-      auth: 'dutapetshop_jwt'
-    }
-  },
-  {
     method: 'PUT',
     path: '/transaction/{id}',
     handler: handler.editTransactionByIdHandler,
@@ -83,14 +75,6 @@ const routes = (handler) => [
     method: 'DELETE',
     path: '/transaction/{id}',
     handler: handler.deleteTransactionByIdHandler,
-    options: {
-      auth: 'dutapetshop_jwt'
-    }
-  },
-  {
-    method: 'DELETE',
-    path: '/transaction/{id}/{transactionId}',
-    handler: handler.deleteTransactionByTransactionIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
