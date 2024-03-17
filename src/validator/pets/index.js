@@ -1,9 +1,10 @@
-const PetsPayloadSchema = require('./schema')
+const InvariantError = require('../../exceptions/InvariantError')
+const { PetsPayloadSchema } = require('./schema')
 
 const PetsValidator = {
-  vaidatePetPayload: (payload) => {
-    const validationResult = PetsPayloadSchema(payload)
-    if (validationResult.error) throw new Error(validationResult.error.message)
+  validatePetPayload: (payload) => {
+    const validationResult = PetsPayloadSchema.validate(payload)
+    if (validationResult.error) throw new InvariantError(validationResult.error.message)
   }
 }
 
