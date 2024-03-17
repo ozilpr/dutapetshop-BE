@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid')
 const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
+const GetLocalTime = require('../../utils/getLocalTime')
 
 class MedResourcesService {
   constructor () {
@@ -10,12 +11,11 @@ class MedResourcesService {
 
   async addResource ({ name, description, type, price }) {
     const id = `resource-${nanoid(8)}`
-    const createdAt = new Date().toISOString()
-    const updatedAt = createdAt
+    const date = await new GetLocalTime().getDate()
 
     const query = {
-      text: 'INSERT INTO med_resources VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
-      values: [id, name, description, type, price, createdAt, updatedAt]
+      text: 'INSERT INTO med_resources VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
+      values: [id, name, description, type, price, date]
     }
 
     const result = await this._pool.query(query)
@@ -45,7 +45,7 @@ class MedResourcesService {
   }
 
   async editResourceById (id, { name, description, type, price }) {
-    const updatedAt = new Date().toISOString()
+    const updatedAt = await new GetLocalTime().getDate()
     const query = {
       text: 'UPDATE med_resources SET name = $1, description = $2, type = $3, price = $4, updated_at = $5 WHERE id = $6 AND deleted_at IS NULL RETURNING id',
       values: [name, description, type, price, updatedAt, id]
@@ -57,7 +57,7 @@ class MedResourcesService {
   }
 
   async deleteResourceById (id) {
-    const deletedAt = new Date().toISOString()
+    const deletedAt = await new GetLocalTime().getDate()
     const query = {
       text: 'UPDATE med_resources set deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
       values: [deletedAt, id]

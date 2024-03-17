@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid')
 const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
+const GetLocalTime = require('../../utils/getLocalTime')
 
 class PetsService {
   constructor () {
@@ -10,7 +11,7 @@ class PetsService {
 
   async addPet ({ name, type, race, gender, birthdate }) {
     const id = `pet-${nanoid(8)}`
-    const createdAt = new Date().toISOString()
+    const createdAt = await new GetLocalTime().getDate()
     const query = {
       text: 'INSERT INTO pets VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
       values: [id, name, type, race, gender, birthdate, createdAt]
@@ -43,7 +44,7 @@ class PetsService {
   }
 
   async editPetById (id, { name, type, race, gender, birthdate }) {
-    const updatedAt = new Date().toISOString()
+    const updatedAt = await new GetLocalTime().getDate()
     const query = {
       text: 'UPDATE pets SET name = $1, type = $2, race = $3, gender = $4, birthdate = $5, updated_at = $6 WHERE id = $7 AND deleted_at IS NULL RETURNING id',
       values: [name, type, race, gender, birthdate, updatedAt, id]
@@ -55,7 +56,7 @@ class PetsService {
   }
 
   async deletePetById (id) {
-    const deletedAt = new Date().toISOString()
+    const deletedAt = await new GetLocalTime().getDate()
     const query = {
       text: 'UPDATE pets SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
       values: [deletedAt, id]

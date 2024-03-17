@@ -4,6 +4,7 @@ const bcryptjs = require('bcryptjs')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
 const AuthenticationError = require('../../exceptions/AuthenticationsError')
+const GetLocalTime = require('../../utils/getLocalTime')
 
 class AdminService {
   constructor () {
@@ -13,9 +14,11 @@ class AdminService {
   async addAdmin ({ username, password, confPassword, fullname }) {
     await this.verifyPassword(password, confPassword)
     await this.verifyNewUsername(username)
-    console.log(username)
+
     const id = `admin-${nanoid(8)}`
-    const createdAt = new Date().toISOString()
+
+    const createdAt = await new GetLocalTime().getDate()
+
     const hashedPassword = await bcryptjs.hash(password, 10)
     const query = {
       text: 'INSERT INTO admin VALUES($1, $2, $3, $4, $5) RETURNING id',
@@ -31,7 +34,7 @@ class AdminService {
 
   async getAdminById (id) {
     const query = {
-      text: 'SELECT id, username, fullname FROM admin WHERE id = $1 AND deleted_at IS NULL',
+      text: 'SELECT id, username, fullname, created_at FROM admin WHERE id = $1 AND deleted_at IS NULL',
       values: [id]
     }
 
@@ -44,7 +47,7 @@ class AdminService {
 
   async getAdminByUsername ({ username }) {
     const query = {
-      text: 'SELECT id, username, fullname FROM admin WHERE username LIKE $1 AND deleted_at IS NULL',
+      text: 'SELECT id, username, fullname, created_at FROM admin WHERE username LIKE $1 AND deleted_at IS NULL',
       values: [username]
     }
 
@@ -65,13 +68,8 @@ class AdminService {
       values: [username]
     }
 
-    try {
-      const result = await this._pool.query(query)
-
-      if (result.rows.length > 0) throw new InvariantError('Username sudah digunakan')
-    } catch (error) {
-      console.error(error)
-    }
+    const result = await this._pool.query(query)
+    if (result.rows.length > 0) throw new InvariantError('Username sudah digunakan')
   }
 
   async verifyEditNewUsername (username, id) {
@@ -118,7 +116,7 @@ class AdminService {
     await this.verifyPassword(password, confPassword)
     await this.verifyEditNewUsername(username, id)
 
-    const updatedAt = new Date().toISOString()
+    const updatedAt = await new GetLocalTime().getDate()
     const hashedPassword = await bcryptjs.hash(password, 10)
 
     const query = {
@@ -132,7 +130,7 @@ class AdminService {
   }
 
   async deleteAdminById (id) {
-    const deletedAt = new Date().toISOString()
+    const deletedAt = await new GetLocalTime().getDate()
     const query = {
       text: 'UPDATE admin SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
       values: [deletedAt, id]
