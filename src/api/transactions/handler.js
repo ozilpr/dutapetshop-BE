@@ -14,37 +14,31 @@ class TransactionsHandler {
   }
 
   async getTransactionDetailsHandler () {
-    const transactionDetails = await this._service.getTransactionDetails()
+    const transactions = await this._service.getTransactionDetails()
 
     return {
       status: 'success',
-      data: {
-        transactionDetails
-      }
+      data: transactions
     }
   }
 
   async getTransactionDetailByIdHandler (request) {
     const { id } = request.params
-    const transactionDetailId = await this._service.getTransactionDetailById(id)
+    const transaction = await this._service.getTransactionDetailById(id)
 
     return {
       status: 'success',
-      data: {
-        transactionDetailId
-      }
+      data: transaction
     }
   }
 
   async getTransactionDetailByOwnerIdHandler (request) {
     const { ownerId } = request.params
-    const transactionDetail = await this._service.getTransactionDetailByOwnerId(ownerId)
+    const transaction = await this._service.getTransactionDetailByOwnerId(ownerId)
 
     return {
       status: 'success',
-      data: {
-        transactionDetail
-      }
+      data: transaction
     }
   }
 
@@ -62,11 +56,11 @@ class TransactionsHandler {
   async deleteTransactionDetailByIdHandler (request) {
     const { id } = request.params
 
-    await this._service.deleteTransactionDetailById(id, request.payload)
+    await this._service.deleteTransactionsById(id)
 
     return {
       status: 'success',
-      message: 'Detail transaksi berhasil dihapus'
+      message: 'Transaksi berhasil dihapus'
     }
   }
 
@@ -112,19 +106,6 @@ class TransactionsHandler {
     }
   }
 
-  async getTransactionByTransactionIdHandler (request) {
-    const { transactionId, id } = request.params
-
-    const transaction = await this._service.getTransactionByTransactionId(transactionId, id)
-
-    return {
-      status: 'success',
-      data: {
-        transaction
-      }
-    }
-  }
-
   async editTransactionByIdHandler (request) {
     const { id } = request.params
 
@@ -144,17 +125,6 @@ class TransactionsHandler {
     return {
       status: 'success',
       message: 'Transaksi berhasil dihapus'
-    }
-  }
-
-  async deleteTransactionByTransactionIdHandler (request) {
-    const { transactionId } = request.params
-
-    await this._service.deleteTransactionById(transactionId)
-
-    return {
-      status: 'success',
-      message: 'Satu transaksi berhasil dihapus'
     }
   }
 }

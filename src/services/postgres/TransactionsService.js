@@ -2,6 +2,7 @@ const { nanoid } = require('nanoid')
 const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
+const GetLocalTime = require('../../utils/getLocalTime')
 
 class TransactionsService {
   constructor () {
@@ -10,7 +11,7 @@ class TransactionsService {
 
   async addTransactionDetail (ownerId) {
     const id = `transaction-${nanoid(8)}`
-    const transactionDate = new Date().toISOString()
+    const transactionDate = await new GetLocalTime().getDate()
     const client = await this._pool.connect()
 
     try {
@@ -30,7 +31,7 @@ class TransactionsService {
     } catch (error) {
       await client.query('ROLLBACK')
       console.log(error)
-      throw new InvariantError('Detail transaksi gagal ditambahkan: ', error.message)
+      throw new InvariantError('Detail transaksi gagal ditambahkan: ', error)
     } finally {
       client.release()
     }
@@ -50,88 +51,228 @@ class TransactionsService {
   }
 
   async getTransactionDetails () {
-    const result = await this._pool.query(`SELECT td.id,
-                                            t.transaction_id,
-                                            r.name AS resource_name, 
-                                            t.quantity,
-                                            t.price,
-                                            o.id AS owner_id,
-                                            o.name AS owner_name,
-                                            o.register_code
-                                            FROM transaction_details td
-                                            INNER JOIN transactions t ON td.id = t.transaction_id
-                                            INNER JOIN med_resources r ON t.resource_id = r.id
-                                            INNER JOIN owners o ON td.owner_id = o.id
-                                            WHERE td.deleted_at IS NULL 
-                                              AND t.deleted_at IS NULL
-                                              AND r.deleted_at IS NULL
-                                              AND o.deleted_at IS NULL`)
+    const transactionDetailResult = await this._pool.query(`
+      SELECT DISTINCT
+        td.id,
+        o.id AS owner_id,
+        o.name AS owner_name,
+        o.register_code,
+        td.transaction_date
+      FROM
+        transaction_details td
+        INNER JOIN transactions t ON td.id = t.transaction_id
+        INNER JOIN med_resources r ON t.resource_id = r.id
+        INNER JOIN owners o ON td.owner_id = o.id
+      WHERE 
+        td.deleted_at IS NULL
+        AND t.deleted_at IS NULL
+        AND r.deleted_at IS NULL
+        AND o.deleted_at IS NULL
+      ORDER BY
+        td.transaction_date
+    `)
 
-    return result.rows
+    const transactionsResult = await this._pool.query(`
+      SELECT DISTINCT
+        t.id,
+        t.transaction_id,
+        r.name AS resource_name,
+        t.quantity,
+        t.price
+      FROM
+        transaction_details td
+        INNER JOIN transactions t ON td.id = t.transaction_id
+        INNER JOIN med_resources r ON t.resource_id = r.id
+        INNER JOIN owners o ON td.owner_id = o.id
+      WHERE
+        td.deleted_at IS NULL
+        AND t.deleted_at IS NULL
+        AND r.deleted_at IS NULL
+        AND o.deleted_at IS NULL
+      ORDER BY
+        r.name
+    `)
+
+    const data = transactionDetailResult.rows.map(transactionDetail => {
+      const transactions = transactionsResult.rows.filter(transaction => transaction.transaction_id === transactionDetail.id)
+      return {
+        transaction_id: transactionDetail.id,
+        owner_id: transactionDetail.owner_id,
+        owner_name: transactionDetail.owner_name,
+        register_code: transactionDetail.register_code,
+        transaction_date: transactionDetail.transaction_date,
+        transactions: transactions.map(transaction => ({
+          id: transaction.id,
+          resource_name: transaction.resource_name,
+          quantity: transaction.quantity,
+          price: transaction.price
+        }))
+      }
+    })
+    return data
   }
 
   async getTransactionDetailById (id) {
-    const query = {
-      text: `SELECT td.id,
-              t.transaction_id,
-              r.name AS resource_name,
-              t.quantity,
-              t.price,
-              o.id AS owner_id,
-              o.name AS owner_name,
-              o.register_code,
-              o.phone
-              FROM transaction_details td
-              INNER JOIN transactions t ON td.id = t.transaction_id
-              INNER JOIN med_resources r ON t.resource_id = r.id
-              INNER JOIN owners o ON td.owner_id = o.id
-              WHERE td.id = $1
-                AND td.deleted_at IS NULL 
-                AND t.deleted_at IS NULL
-                AND r.deleted_at IS NULL
-                AND o.deleted_at IS NULL`,
+    const queryTransactionDetail = {
+      text: `
+        SELECT DISTINCT
+          td.id,
+          o.id AS owner_id,
+          o.name AS owner_name,
+          o.register_code,
+          td.transaction_date
+        FROM
+          transaction_details td
+          INNER JOIN transactions t ON td.id = t.transaction_id
+          INNER JOIN med_resources r ON t.resource_id = r.id
+          INNER JOIN owners o ON td.owner_id = o.id
+        WHERE
+          td.id = $1 
+          AND td.deleted_at IS NULL
+          AND t.deleted_at IS NULL
+          AND r.deleted_at IS NULL
+          AND o.deleted_at IS NULL
+        ORDER BY
+          td.transaction_date
+      `,
       values: [id]
     }
-    try {
-      const result = await this._pool.query(query)
 
-      return result.rows
-    } catch (error) {
-      console.error(error)
+    const queryTransactions = {
+      text: `
+        SELECT DISTINCT
+          t.id,
+          t.transaction_id,
+          r.name AS resource_name, 
+          t.quantity,
+          t.price
+        FROM
+          transaction_details td
+          INNER JOIN transactions t ON td.id = t.transaction_id
+          INNER JOIN med_resources r ON t.resource_id = r.id
+          INNER JOIN owners o ON td.owner_id = o.id
+        WHERE
+          td.id = $1
+          AND td.deleted_at IS NULL 
+          AND t.deleted_at IS NULL
+          AND r.deleted_at IS NULL
+          AND o.deleted_at IS NULL
+        ORDER BY
+          r.name
+      `,
+      values: [id]
     }
+
+    const transactionDetailResult = await this._pool.query(queryTransactionDetail)
+
+    const transactionResult = await this._pool.query(queryTransactions)
+
+    const data = transactionDetailResult.rows.map(transactionDetail => {
+      const transactions = transactionResult.rows.filter(transaction => transaction.transaction_id === transactionDetail.id)
+      return {
+        transaction_id: transactionDetail.id,
+        owner_id: transactionDetail.owner_id,
+        owner_name: transactionDetail.owner_name,
+        register_code: transactionDetail.register_code,
+        transaction_date: transactionDetail.transaction_date,
+        transactions: transactions.map(transaction => ({
+          id: transaction.id,
+          resource_name: transaction.resource_name,
+          quantity: transaction.quantity,
+          price: transaction.price
+        }))
+      }
+    })
+    return data[0]
   }
 
   async getTransactionDetailByOwnerId (ownerId) {
-    const query = {
-      text: `SELECT td.id,
-              t.transaction_id,
-              r.name AS resource_name,
-              t.quantity,
-              t.price,
-              o.id AS owner_id,
-              o.name AS owner_name,
-              o.register_code,
-              o.phone
-              FROM transaction_details td
-              INNER JOIN transactions t ON td.id = t.transaction_id
-              INNER JOIN med_resources r ON t.resource_id = r.id
-              INNER JOIN owners o ON td.owner_id = o.id
-              WHERE o.id = $1
-                AND td.deleted_at IS NULL
-                AND t.deleted_at IS NULL
-                AND r.deleted_at IS NULL
-                AND o.deleted_at IS NULL`,
+    const queryTransactionDetail = {
+      text: `
+        SELECT DISTINCT
+          td.id,
+          o.id AS owner_id,
+          o.name AS owner_name,
+          o.register_code,
+          td.transaction_date
+        FROM
+          transaction_details td
+          INNER JOIN transactions t ON td.id = t.transaction_id
+          INNER JOIN med_resources r ON t.resource_id = r.id
+          INNER JOIN owners o ON td.owner_id = o.id
+        WHERE
+          td.owner_id = $1 
+          AND td.deleted_at IS NULL
+          AND t.deleted_at IS NULL
+          AND r.deleted_at IS NULL
+          AND o.deleted_at IS NULL
+        ORDER BY
+          td.transaction_date
+      `,
       values: [ownerId]
     }
-    const result = await this._pool.query(query)
+    const queryTransactions = {
+      text: `
+        SELECT DISTINCT
+          t.id,
+          t.transaction_id,
+          r.name AS resource_name, 
+          t.quantity,
+          t.price
+        FROM
+          transaction_details td
+          INNER JOIN transactions t ON td.id = t.transaction_id
+          INNER JOIN med_resources r ON t.resource_id = r.id
+          INNER JOIN owners o ON td.owner_id = o.id
+        WHERE
+          td.owner_id = $1
+          AND td.deleted_at IS NULL 
+          AND t.deleted_at IS NULL
+          AND r.deleted_at IS NULL
+          AND o.deleted_at IS NULL
+        ORDER BY
+          r.name
+      `,
+      values: [ownerId]
+    }
 
-    return result.rows
+    const transactionDetailResult = await this._pool.query(queryTransactionDetail)
+
+    const transactionResult = await this._pool.query(queryTransactions)
+
+    const data = transactionDetailResult.rows.map(transactionDetail => {
+      const transactions = transactionResult.rows.filter(transaction => transaction.transaction_id === transactionDetail.id)
+      return {
+        transaction_id: transactionDetail.id,
+        owner_id: transactionDetail.owner_id,
+        owner_name: transactionDetail.owner_name,
+        register_code: transactionDetail.register_code,
+        transaction_date: transactionDetail.transaction_date,
+        transactions: transactions.map(transaction => ({
+          id: transaction.id,
+          resource_name: transaction.resource_name,
+          quantity: transaction.quantity,
+          price: transaction.price
+        }))
+      }
+    })
+    return data
   }
 
   async editTransactionDetailById (id, { ownerId }) {
-    const updatedAt = new Date().toISOString()
+    const updatedAt = await new GetLocalTime().getDate()
     const query = {
-      text: 'UPDATE transaction_details set owner_id = $1, updated_at = $2 WHERE id = $3 AND deleted_at IS NULL RETURNING id',
+      text: `
+        UPDATE
+          transaction_details
+        SET
+          owner_id = $1,
+          updated_at = $2
+        WHERE
+          id = $3
+          AND deleted_at IS NULL
+        RETURNING id
+      `,
       values: [ownerId, updatedAt, id]
     }
 
@@ -141,40 +282,50 @@ class TransactionsService {
   }
 
   async deleteTransactionDetailById (id) {
-    const deletedAt = new Date().toISOString()
-    const queryTransactionsId = {
-      text: 'SELECT id FROM transactions WHERE transaction_id = $1 AND deleted_at IS NULL',
-      values: [id]
-    }
-    const transactionsId = await this._pool.query(queryTransactionsId)
-
-    for (const transaction of transactionsId.rows) {
-      const queryTransactions = {
-        text: 'UPDATE transactions SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
-        values: [deletedAt, transaction.id]
-      }
-
-      const result = await this._pool.query(queryTransactions)
-
-      if (!result.rows.length) throw new NotFoundError('Gagal menghapus transaksi. Id tidak ditemukan')
-    }
-
-    const queryTransactionDetail = {
-      text: 'UPDATE transaction_details SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
+    const deletedAt = await new GetLocalTime().getDate()
+    const queryTransactions = {
+      text: `
+        UPDATE
+          transactions
+        SET
+          deleted_at = $1
+        WHERE
+          transaction_id = $2
+          AND deleted_at IS NULL
+        RETURNING id
+      `,
       values: [deletedAt, id]
     }
-    const result = await this._pool.query(queryTransactionDetail)
 
-    if (!result.rows.length) throw new NotFoundError('Gagal menghapus detail transaksi. Id tidak ditemukan.')
+    const resultTransaction = await this._pool.query(queryTransactions)
+
+    if (!resultTransaction.rows.length) throw new NotFoundError('Gagal menghapus transaksi. Id tidak ditemukan')
+
+    const queryTransactionDetail = {
+      text: `
+        UPDATE
+          transaction_details
+        SET
+          deleted_at = $1
+        WHERE
+          id = $2
+          AND deleted_at IS NULL
+        RETURNING id
+      `,
+      values: [deletedAt, id]
+    }
+    const resultTransDetail = await this._pool.query(queryTransactionDetail)
+
+    if (!resultTransDetail.rows.length) throw new NotFoundError('Gagal menghapus detail transaksi. Id tidak ditemukan.')
   }
 
   async addTransaction (transactionId, transactionsData) {
-    const createdAt = new Date().toISOString()
+    const createdAt = await new GetLocalTime().getDate()
     const client = await this._pool.connect()
 
     let iterationCount = 0
 
-    const transactionStatus = []
+    const transactionItems = []
 
     try {
       await client.query('BEGIN')
@@ -182,7 +333,7 @@ class TransactionsService {
       for (const transaction of transactionsData) {
         const price = await this.getResourcePriceByResourceId(transaction.resourceId)
 
-        const id = `id-${nanoid(8)}`
+        const id = `trans_item-${nanoid(8)}`
         const query = {
           text: 'INSERT INTO transactions VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
           values: [id, transactionId, transaction.resourceId, transaction.quantity, price, createdAt]
@@ -193,56 +344,38 @@ class TransactionsService {
 
         if (!result.rows[0].id) throw new InvariantError(`Transaksi ke: ${iterationCount},gagal ditambahkan`)
 
-        transactionStatus.push(result.rows[0].id)
+        transactionItems.push({ trans_item: result.rows[0].id })
       }
       await client.query('COMMIT')
     } catch (error) {
       await client.query('ROLLBACK')
-      console.error('Error adding transactions: ', error.message)
+      console.error('Error adding transactions: ', error)
       throw new InvariantError('Transaksi gagal ditambahkan')
     } finally {
       client.release()
     }
-    return transactionStatus
+    return { transactionId, transactionItems }
   }
 
   async getTransactions () {
-    const result = await this._pool.query(`SELECT t.id,
-                                            t.transaction_id,
-                                            t.resource_id,
-                                            r.name AS resource_name,
-                                            t.quantity,
-                                            t.price,
-                                            t.created_at
-                                            FROM transactions t
-                                            INNER JOIN med_resources r ON t.resource_id = r.id
-                                            WHERE t.deleted_at IS NULL
-                                              AND r.deleted_at IS NULL`)
-
-    return result.rows
-  }
-
-  async getTransactionByTransactionId (transactionId, id) {
-    const query = {
-      text: `SELECT t.id,
-              t.transaction_id,
-              t.resource_id,
-              r.name AS resource_name,
-              t.quantity,
-              t.price,
-              t.created_at
-              FROM transactions t
-              INNER JOIN med_resources r ON t.resource_id = r.id
-              WHERE t.id = $1
-                AND t.transaction_id = $2
-                AND t.deleted_at IS NULL
-                AND r.deleted_at IS NULL`,
-      values: [id, transactionId]
-    }
-
-    const result = await this._pool.query(query)
-
-    if (!result.rows.length) throw new NotFoundError('Transaksi tidak ditemukan')
+    const result = await this._pool.query(`
+      SELECT
+        t.id,
+        t.transaction_id,
+        t.resource_id,
+        r.name AS resource_name,
+        t.quantity,
+        t.price,
+        t.created_at
+      FROM
+        transactions t
+        INNER JOIN med_resources r ON t.resource_id = r.id
+      WHERE
+        t.deleted_at IS NULL
+        AND r.deleted_at IS NULL
+      ORDER BY
+        t.created_at
+      `)
 
     return result.rows
   }
@@ -250,10 +383,22 @@ class TransactionsService {
   async editTransactionById (id, { resourceId, quantity }) {
     const price = await this.getResourcePriceByResourceId(resourceId)
 
-    const updatedAt = new Date().toISOString()
+    const updatedAt = await new GetLocalTime().getDate()
 
     const query = {
-      text: 'UPDATE transactions SET resource_id = $1, quantity = $2, price = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL RETURNING id',
+      text: `
+        UPDATE
+          transactions
+        SET 
+          resource_id = $1,
+          quantity = $2,
+          price = $3,
+          updated_at = $4
+        WHERE
+          id = $5
+          AND deleted_at IS NULL
+        RETURNING id
+      `,
       values: [resourceId, quantity, price, updatedAt, id]
     }
 
@@ -263,22 +408,19 @@ class TransactionsService {
   }
 
   async deleteTransactionById (id) {
-    const deletedAt = new Date().toISOString()
+    const deletedAt = await new GetLocalTime().getDate()
     const query = {
-      text: 'UPDATE transactions SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
+      text: `
+        UPDATE
+          transactions
+        SET
+          deleted_at = $1
+        WHERE
+          id = $2
+          AND deleted_at IS NULL
+        RETURNING id
+      `,
       values: [deletedAt, id]
-    }
-
-    const result = await this._pool.query(query)
-
-    if (!result.rows.length) throw new NotFoundError('Gagal menghapus transaksi. Id tidak ditemukan')
-  }
-
-  async deleteTransactionByTransactionId (transactionId) {
-    const deletedAt = new Date().toISOString()
-    const query = {
-      text: 'UPDATE transactions SET deleted_at = $1 WHERE transactionId = $2 AND deleted_at IS NULL RETURNING id',
-      values: [deletedAt, transactionId]
     }
 
     const result = await this._pool.query(query)
