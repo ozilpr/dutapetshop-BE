@@ -36,8 +36,8 @@ class AdminHandler {
     }
   }
 
-  async getAdminByUsernameHandler (request) {
-    const admin = await this._service.getAdminByUsername(request.query)
+  async getAdminByNameHandler (request) {
+    const admin = await this._service.getAdminByName(request.query)
 
     return {
       status: 'success',

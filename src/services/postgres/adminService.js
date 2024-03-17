@@ -45,17 +45,17 @@ class AdminService {
     return result.rows[0]
   }
 
-  async getAdminByUsername ({ username }) {
+  async getAdminByName ({ name }) {
     const query = {
-      text: 'SELECT id, username, fullname, created_at FROM admin WHERE username LIKE $1 AND deleted_at IS NULL',
-      values: [username]
+      text: 'SELECT id, username, fullname, created_at FROM admin WHERE username LIKE $1 OR fullname LIKE $1 AND deleted_at IS NULL',
+      values: [`%${name}%`]
     }
 
     const result = await this._pool.query(query)
 
     if (!result.rows.length) throw new NotFoundError('Admin tidak ditemukan')
 
-    return result.rows[0]
+    return result.rows
   }
 
   async verifyPassword (password, confPassword) {

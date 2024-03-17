@@ -12,7 +12,7 @@ const routes = (handler) => [
   {
     method: 'GET',
     path: '/admin',
-    handler: handler.getAdminByUsernameHandler
+    handler: handler.getAdminByNameHandler
   },
   {
     method: 'PUT',
