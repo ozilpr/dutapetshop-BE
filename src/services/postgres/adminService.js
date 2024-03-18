@@ -47,7 +47,19 @@ class AdminService {
 
   async getAdminByName ({ name }) {
     const query = {
-      text: 'SELECT id, username, fullname, created_at FROM admin WHERE username LIKE $1 OR fullname LIKE $1 AND deleted_at IS NULL',
+      text: `
+        SELECT
+          id,
+          username,
+          fullname,
+          created_at
+        FROM
+          admin
+        WHERE
+          (username LIKE $1
+          OR fullname LIKE $1)
+          AND deleted_at IS NULL
+      `,
       values: [`%${name}%`]
     }
 
