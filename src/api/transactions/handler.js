@@ -56,7 +56,7 @@ class TransactionsHandler {
   async deleteTransactionDetailByIdHandler (request) {
     const { id } = request.params
 
-    await this._service.deleteTransactionsById(id)
+    await this._service.deleteTransactionDetailById(id)
 
     return {
       status: 'success',
