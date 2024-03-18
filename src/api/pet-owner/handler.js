@@ -33,6 +33,7 @@ class PetOwnerHandler {
         id: owner.id,
         owner_id: owner.owner_id,
         owner_name: owner.owner_name,
+        register_code: owner.register_code,
         pet: pets
       }
     }

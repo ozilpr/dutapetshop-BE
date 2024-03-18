@@ -39,9 +39,10 @@ class PetOwnerService {
   async getPetOwnerByOwnerId (ownerId) {
     const queryOwner = {
       text: `
-        SELECT
+        SELECT DISTINCT
           po.owner_id,
-          o.name AS owner_name
+          o.name AS owner_name,
+          o.register_code
         FROM
           pet_owner po
           INNER JOIN owners o ON po.owner_id = o.id
@@ -54,7 +55,7 @@ class PetOwnerService {
 
     const queryPet = {
       text: `
-        SELECT
+        SELECT DISTINCT
           po.id,
           po.pet_id,
           p.name AS pet_name
