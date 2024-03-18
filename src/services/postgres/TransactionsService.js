@@ -57,7 +57,8 @@ class TransactionsService {
         o.id AS owner_id,
         o.name AS owner_name,
         o.register_code,
-        td.transaction_date
+        td.transaction_date,
+        td.updated_at
       FROM
         transaction_details td
         INNER JOIN transactions t ON td.id = t.transaction_id
@@ -66,8 +67,6 @@ class TransactionsService {
       WHERE 
         td.deleted_at IS NULL
         AND t.deleted_at IS NULL
-        AND r.deleted_at IS NULL
-        AND o.deleted_at IS NULL
       ORDER BY
         td.transaction_date
     `)
@@ -87,8 +86,6 @@ class TransactionsService {
       WHERE
         td.deleted_at IS NULL
         AND t.deleted_at IS NULL
-        AND r.deleted_at IS NULL
-        AND o.deleted_at IS NULL
       ORDER BY
         r.name
     `)
@@ -120,7 +117,8 @@ class TransactionsService {
           o.id AS owner_id,
           o.name AS owner_name,
           o.register_code,
-          td.transaction_date
+          td.transaction_date,
+          td.updated_at
         FROM
           transaction_details td
           INNER JOIN transactions t ON td.id = t.transaction_id
@@ -130,8 +128,6 @@ class TransactionsService {
           td.id = $1 
           AND td.deleted_at IS NULL
           AND t.deleted_at IS NULL
-          AND r.deleted_at IS NULL
-          AND o.deleted_at IS NULL
         ORDER BY
           td.transaction_date
       `,
@@ -155,8 +151,6 @@ class TransactionsService {
           td.id = $1
           AND td.deleted_at IS NULL 
           AND t.deleted_at IS NULL
-          AND r.deleted_at IS NULL
-          AND o.deleted_at IS NULL
         ORDER BY
           r.name
       `,
@@ -164,6 +158,8 @@ class TransactionsService {
     }
 
     const transactionDetailResult = await this._pool.query(queryTransactionDetail)
+
+    if (!transactionDetailResult.rows.length) throw new NotFoundError('Transaksi tidak ditemukan')
 
     const transactionResult = await this._pool.query(queryTransactions)
 
@@ -194,7 +190,8 @@ class TransactionsService {
           o.id AS owner_id,
           o.name AS owner_name,
           o.register_code,
-          td.transaction_date
+          td.transaction_date,
+          td.updated_at
         FROM
           transaction_details td
           INNER JOIN transactions t ON td.id = t.transaction_id
@@ -204,8 +201,6 @@ class TransactionsService {
           td.owner_id = $1 
           AND td.deleted_at IS NULL
           AND t.deleted_at IS NULL
-          AND r.deleted_at IS NULL
-          AND o.deleted_at IS NULL
         ORDER BY
           td.transaction_date
       `,
@@ -228,8 +223,6 @@ class TransactionsService {
           td.owner_id = $1
           AND td.deleted_at IS NULL 
           AND t.deleted_at IS NULL
-          AND r.deleted_at IS NULL
-          AND o.deleted_at IS NULL
         ORDER BY
           r.name
       `,
@@ -366,7 +359,8 @@ class TransactionsService {
         r.name AS resource_name,
         t.quantity,
         t.price,
-        t.created_at
+        t.created_at,
+        t.updated_at
       FROM
         transactions t
         INNER JOIN med_resources r ON t.resource_id = r.id
