@@ -119,7 +119,7 @@ Response :
 
 Request :
 - Method : Post
-- Endpoint : `/authentication`
+- Endpoint : `/authentications`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -147,7 +147,7 @@ Request :
 
 Request
 - Method : Put
-- Endpoint : `/authentication`
+- Endpoint : `/authentications`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -173,7 +173,7 @@ Response :
 
 Request :
 - Method : Delete
-- Endpoint : `/authentication`
+- Endpoint : `/authentications`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
@@ -243,7 +243,8 @@ Response :
       "description" : "string",
       "type" : "string",
       "price" : "integer",
-      "created_at" : "string"
+      "created_at" : "string",
+      "updated_at" : "string"
     },
     {
       "id" : "string, unique",
@@ -251,7 +252,8 @@ Response :
       "description" : "string",
       "type" : "string",
       "price" : "integer",
-      "created_at" : "string"
+      "created_at" : "string",
+      "updated_at" : "string"
     }
   ]
 }
@@ -275,7 +277,8 @@ Response :
     "description" : "string",
     "type" : "string",
     "price" : "integer",
-    "created_at" : "string"
+    "created_at" : "string",
+    "updated_at" : "string"
   }
 }
 ```
@@ -370,14 +373,16 @@ Response :
       "register_code" : "string, unique",
       "name" : "string",
       "phone" : "string",
-      "created_at" : "string"
+      "created_at" : "string",
+      "updated_at" : "string"
     },
     {
       "id" : "string, unique",
       "register_code" : "string, unique",
       "name" : "string",
       "phone" : "string",
-      "created_at" : "string"
+      "created_at" : "string",
+      "updated_at" : "string"
     }
   ]
 }
@@ -400,7 +405,8 @@ Response :
     "register_code" : "string, unique",
     "name" : "string",
     "phone" : "string",
-    "created_at" : "string"
+    "created_at" : "string",
+    "updated_at" : "string"
   }
 }
 ```
@@ -498,7 +504,8 @@ Response :
       "race" : "string",
       "gender" : "string",
       "birthdate" : "string",
-      "created_at" : "string"
+      "created_at" : "string",
+      "updated_at" : "string"
     },
     {
       "id" : "string, unique",
@@ -507,7 +514,8 @@ Response :
       "race" : "string",
       "gender" : "string",
       "birthdate" : "string",
-      "created_at" : "string"
+      "created_at" : "string",
+      "updated_at" : "string"
     }
   ]
 }
@@ -532,7 +540,8 @@ Response :
     "race" : "string",
     "gender" : "string",
     "birthdate" : "string",
-    "created_at" : "string"
+    "created_at" : "string",
+    "updated_at" : "string"
   }
 }
 ```
@@ -908,7 +917,8 @@ Response :
       "resource_name" : "string",
       "quantity" : "integer",
       "price" : "integer",
-      "created_at" : "string"
+      "created_at" : "string",
+      "updated_at" : "string"
     },
     {
       "id" : "string, unique",
@@ -917,7 +927,8 @@ Response :
       "resource_name" : "string",
       "quantity" : "integer",
       "price" : "integer",
-      "created_at" : "string"
+      "created_at" : "string",
+      "updated_at" : "string"
     }
   ]
 }
