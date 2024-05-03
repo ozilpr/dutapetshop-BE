@@ -48,7 +48,7 @@ class AdminHandler {
   }
 
   async editAdminByIdHandler (request) {
-    await this._validator.validateAdminPayload(request.payload)
+    await this._validator.validateUpdateAdminPayload(request.payload)
 
     const { id } = request.params
     await this._service.editAdminById(id, request.payload)
