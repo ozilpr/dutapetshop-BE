@@ -35,6 +35,17 @@ class PetsHandler {
     }
   }
 
+  async getPetsWithoutOwnerHandler () {
+    const pets = await this._service.getPetsWithoutOwner()
+
+    return {
+      status: 'success',
+      data: {
+        pets
+      }
+    }
+  }
+
   async getPetByIdHandler (request) {
     const { id } = request.params
     const pet = await this._service.getPetById(id)
