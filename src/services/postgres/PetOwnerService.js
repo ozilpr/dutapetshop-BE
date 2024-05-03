@@ -49,6 +49,12 @@ class PetOwnerService {
           INNER JOIN pets p ON po.pet_id = p.id
         WHERE
           po.owner_id = $1
+        AND
+          po.deleted_at IS NULL
+        AND
+          o.deleted_at IS NULL
+        AND
+          p.deleted_at IS NULL
       `,
       values: [ownerId]
     }
@@ -65,13 +71,19 @@ class PetOwnerService {
           INNER JOIN pets p ON po.pet_id = p.id
         WHERE
           po.owner_id = $1
+        AND
+          po.deleted_at IS NULL
+        AND
+          o.deleted_at IS NULL
+        AND
+          p.deleted_at IS NULL
       `,
       values: [ownerId]
     }
 
     const resultOwner = await this._pool.query(queryOwner)
 
-    if (!resultOwner.rows.length) throw new NotFoundError('Owner tidak ditemukan')
+    if (!resultOwner.rows.length) throw new NotFoundError('Owner belum memiliki peliharaan')
 
     const resultPet = await this._pool.query(queryPet)
 
@@ -83,7 +95,7 @@ class PetOwnerService {
 
   async deletePetOwnerById (id) {
     const query = {
-      text: 'DELETE FROM pet_owner WHERE id = $1 RETURNING id',
+      text: 'DELETE FROM pet_owner WHERE id = $1 AND deleted_at IS NULL RETURNING id',
       values: [id]
     }
 
