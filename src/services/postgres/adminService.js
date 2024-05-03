@@ -59,6 +59,8 @@ class AdminService {
           (username LIKE $1
           OR fullname LIKE $1)
           AND deleted_at IS NULL
+        ORDER BY
+          username
       `,
       values: [`%${name}%`]
     }
@@ -124,16 +126,60 @@ class AdminService {
     return id
   }
 
+  async verifyEditAdmin (id, username, fullname, password) {
+    const newAdmin = {}
+
+    // Check if username, fullname, and password are provided
+    if (username !== '' && username !== null) {
+      newAdmin.username = username
+    }
+
+    if (fullname !== '' && fullname !== null) {
+      newAdmin.fullname = fullname
+    }
+
+    if (password !== '' && password !== null) {
+      const hashedPassword = await bcryptjs.hash(password, 10)
+      newAdmin.password = hashedPassword
+    }
+
+    const oldAdmin = await this.getAdminById(id)
+
+    if (!oldAdmin) throw new NotFoundError('Id admin tidak ditemukan')
+
+    if (username === '' || username === null) {
+      newAdmin.username = oldAdmin.username
+    }
+
+    if (fullname === '' || fullname === null) {
+      newAdmin.fullname = oldAdmin.fullname
+    }
+    if (password === '' || password === null) {
+      const query = {
+        text: 'SELECT password FROM admin WHERE id = $1 AND deleted_at IS NULL',
+        values: [id]
+      }
+
+      const result = await this._pool.query(query)
+
+      if (!result.rows.length) throw new NotFoundError('Admin tidak ditemukan')
+
+      newAdmin.password = result.rows[0].password
+    }
+
+    return newAdmin
+  }
+
   async editAdminById (id, { username, password, confPassword, fullname }) {
     await this.verifyPassword(password, confPassword)
     await this.verifyEditNewUsername(username, id)
+    const newAdmin = await this.verifyEditAdmin(id, username, fullname, password)
 
     const updatedAt = await new GetLocalTime().getDate()
-    const hashedPassword = await bcryptjs.hash(password, 10)
 
     const query = {
       text: 'UPDATE admin SET username = $1, password = $2, fullname = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL RETURNING id',
-      values: [username, hashedPassword, fullname, updatedAt, id]
+      values: [newAdmin.username, newAdmin.password, newAdmin.fullname, updatedAt, id]
     }
 
     const result = await this._pool.query(query)
