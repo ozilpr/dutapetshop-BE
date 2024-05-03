@@ -26,7 +26,12 @@ class MedResourcesService {
   }
 
   async getResources () {
-    const result = await this._pool.query('SELECT id, name, description, type, price, created_at FROM med_resources WHERE deleted_at IS NULL')
+    const result = await this._pool.query(`
+      SELECT id, name, description, type, price, created_at
+      FROM med_resources
+      WHERE deleted_at IS NULL
+      ORDER BY name
+    `)
 
     return result.rows
   }
