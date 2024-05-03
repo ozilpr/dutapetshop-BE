@@ -25,7 +25,63 @@ class PetsService {
   }
 
   async getPets () {
-    const result = await this._pool.query('SELECT id, name, type, race, gender, birthdate, created_at FROM pets WHERE deleted_at IS NULL')
+    const result = await this._pool.query(`
+      SELECT DISTINCT
+        p.id,
+        p.name,
+        p.type,
+        p.race,
+        p.gender,
+        p.birthdate,
+        p.created_at,
+        o.id AS owner_id,
+        o.name AS owner_name,
+        o.register_code
+      FROM
+        pets p
+        LEFT JOIN pet_owner po on po.pet_id = p.id
+        LEFT JOIN owners o on po.owner_id = o.id
+      WHERE 
+        po.deleted_at IS NULL
+      AND
+        o.deleted_at is null
+      AND 
+        p.deleted_at is null
+      ORDER BY p.name
+    `)
+
+    return result.rows
+  }
+
+  async getPetsWithoutOwner () {
+    const result = await this._pool.query(`
+      SELECT DISTINCT
+        p.id,
+        p.name,
+        p.type,
+        p.race,
+        p.gender,
+        p.birthdate,
+        p.created_at,
+        o.id AS owner_id,
+        o.name AS owner_name,
+        o.register_code
+      FROM
+        pets p
+        LEFT JOIN pet_owner po on po.pet_id = p.id
+        LEFT JOIN owners o on po.owner_id = o.id
+      WHERE 
+        po.owner_id IS NULL
+      AND
+        po.pet_id IS NULL
+      AND
+        po.deleted_at IS NULL
+      AND
+        o.deleted_at is null
+      AND 
+        p.deleted_at is null
+      ORDER BY p.name
+    `)
 
     return result.rows
   }
