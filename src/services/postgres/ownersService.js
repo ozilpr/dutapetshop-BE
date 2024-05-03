@@ -59,7 +59,20 @@ class OwnersService {
   }
 
   async getOwners () {
-    const result = await this._pool.query('SELECT id, register_code, name, phone, created_at FROM owners WHERE deleted_at IS NULL')
+    const result = await this._pool.query(`
+      SELECT
+        id,
+        register_code,
+        name,
+        phone,
+        created_at
+      FROM
+        owners
+      WHERE
+        deleted_at IS NULL
+      ORDER BY
+        register_code
+    `)
 
     return result.rows
   }
@@ -81,7 +94,20 @@ class OwnersService {
     await this.verifyEditRegisterCode(id, registerCode)
     const updatedAt = await new GetLocalTime().getDate()
     const query = {
-      text: 'UPDATE owners SET register_code = $1, name = $2, phone = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL RETURNING id',
+      text: `
+        UPDATE
+          owners
+        SET
+          register_code = $1,
+          name = $2,
+          phone = $3,
+          updated_at = $4
+        WHERE
+          id = $5
+        AND
+          deleted_at IS NULL
+        RETURNING id
+      `,
       values: [registerCode, name, phone, updatedAt, id]
     }
 
