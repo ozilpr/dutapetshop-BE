@@ -69,6 +69,7 @@ class TransactionsService {
         AND t.deleted_at IS NULL
       ORDER BY
         td.transaction_date
+      DESC
     `)
 
     const transactionsResult = await this._pool.query(`
@@ -183,73 +184,57 @@ class TransactionsService {
   }
 
   async getTransactionDetailByOwnerId (ownerId) {
-    const queryTransactionDetail = {
-      text: `
-        SELECT DISTINCT
-          td.id,
-          o.id AS owner_id,
-          o.name AS owner_name,
-          o.register_code,
-          td.transaction_date,
-          td.updated_at
-        FROM
-          transaction_details td
-          INNER JOIN transactions t ON td.id = t.transaction_id
-          INNER JOIN med_resources r ON t.resource_id = r.id
-          INNER JOIN owners o ON td.owner_id = o.id
-        WHERE
-          td.owner_id = $1 
-          AND td.deleted_at IS NULL
-          AND t.deleted_at IS NULL
-        ORDER BY
-          td.transaction_date
-      `,
-      values: [ownerId]
-    }
-    const queryTransactions = {
-      text: `
-        SELECT DISTINCT
-          t.id,
-          t.transaction_id,
-          r.name AS resource_name, 
-          t.quantity,
-          t.price
-        FROM
-          transaction_details td
-          INNER JOIN transactions t ON td.id = t.transaction_id
-          INNER JOIN med_resources r ON t.resource_id = r.id
-          INNER JOIN owners o ON td.owner_id = o.id
-        WHERE
-          td.owner_id = $1
-          AND td.deleted_at IS NULL 
-          AND t.deleted_at IS NULL
-        ORDER BY
-          r.name
-      `,
-      values: [ownerId]
-    }
-
-    const transactionDetailResult = await this._pool.query(queryTransactionDetail)
-
-    const transactionResult = await this._pool.query(queryTransactions)
-
-    const data = transactionDetailResult.rows.map(transactionDetail => {
-      const transactions = transactionResult.rows.filter(transaction => transaction.transaction_id === transactionDetail.id)
-      return {
-        transaction_id: transactionDetail.id,
-        owner_id: transactionDetail.owner_id,
-        owner_name: transactionDetail.owner_name,
-        register_code: transactionDetail.register_code,
-        transaction_date: transactionDetail.transaction_date,
-        transactions: transactions.map(transaction => ({
-          id: transaction.id,
-          resource_name: transaction.resource_name,
-          quantity: transaction.quantity,
-          price: transaction.price
-        }))
+    try {
+      const queryOwner = {
+        text: `
+          SELECT
+            id AS owner_id,
+            name AS owner_name,
+            register_code
+          FROM
+            owners 
+          WHERE
+            id = $1
+        `,
+        values: [ownerId]
       }
-    })
-    return data
+      const queryTransactions = {
+        text: `
+          SELECT DISTINCT
+            td.id,
+            td.transaction_date,
+            td.updated_at,
+            t.id,
+            t.transaction_id,
+            r.name AS resource_name, 
+            t.quantity,
+            t.price
+          FROM
+            transaction_details td
+            INNER JOIN transactions t ON td.id = t.transaction_id
+            INNER JOIN med_resources r ON t.resource_id = r.id
+            INNER JOIN owners o ON td.owner_id = o.id
+          WHERE
+            td.owner_id = $1
+            AND td.deleted_at IS NULL 
+            AND t.deleted_at IS NULL
+          ORDER BY
+            r.name
+        `,
+        values: [ownerId]
+      }
+
+      const ownerResult = await this._pool.query(queryOwner)
+
+      const transactionResult = await this._pool.query(queryTransactions)
+
+      return ({
+        owner: ownerResult.rows,
+        transactions: transactionResult.rows
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async editTransactionDetailById (id, { ownerId }) {
