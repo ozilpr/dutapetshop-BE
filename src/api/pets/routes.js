@@ -17,6 +17,14 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
+    path: '/pet/without-owner',
+    handler: handler.getPetsWithoutOwnerHandler,
+    options: {
+      auth: 'dutapetshop_jwt'
+    }
+  },
+  {
+    method: 'GET',
     path: '/pet/{id}',
     handler: handler.getPetByIdHandler,
     options: {
