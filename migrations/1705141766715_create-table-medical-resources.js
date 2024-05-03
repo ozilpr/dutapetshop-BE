@@ -10,7 +10,7 @@ exports.up = pgm => {
       notNull: true
     },
     description: {
-      type: 'VARCHAR(100)',
+      type: 'VARCHAR(200)',
       notNull: false
     },
     type: {
