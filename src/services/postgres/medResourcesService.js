@@ -10,67 +10,87 @@ class MedResourcesService {
   }
 
   async addResource ({ name, description, type, price }) {
-    const id = `resource-${nanoid(8)}`
-    const date = await new GetLocalTime().getDate()
+    try {
+      const id = `resource-${nanoid(8)}`
+      const date = await new GetLocalTime().getDate()
 
-    const query = {
-      text: 'INSERT INTO med_resources VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
-      values: [id, name, description, type, price, date]
+      const query = {
+        text: 'INSERT INTO med_resources VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
+        values: [id, name, description, type, price, date]
+      }
+
+      const result = await this._pool.query(query)
+
+      if (!result.rows[0].id) throw new InvariantError('Resource gagal ditambahkan')
+
+      return result.rows[0].id
+    } catch (error) {
+      console.log(error)
     }
-
-    const result = await this._pool.query(query)
-
-    if (!result.rows[0].id) throw new InvariantError('Resource gagal ditambahkan')
-
-    return result.rows[0].id
   }
 
   async getResources () {
-    const result = await this._pool.query(`
-      SELECT id, name, description, type, price, created_at
-      FROM med_resources
-      WHERE deleted_at IS NULL
-      ORDER BY name
-    `)
+    try {
+      const result = await this._pool.query(`
+        SELECT id, name, description, type, price, created_at
+        FROM med_resources
+        WHERE deleted_at IS NULL
+        ORDER BY name
+      `)
 
-    return result.rows
+      return result.rows
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async getResourceById (id) {
-    const query = {
-      text: 'SELECT id, name, description, type, price, created_at FROM med_resources WHERE id = $1 AND deleted_at IS NULL',
-      values: [id]
+    try {
+      const query = {
+        text: 'SELECT id, name, description, type, price, created_at FROM med_resources WHERE id = $1 AND deleted_at IS NULL',
+        values: [id]
+      }
+
+      const result = await this._pool.query(query)
+
+      if (!result.rows.length) throw new NotFoundError('Resource tidak ditemukan')
+
+      return result.rows[0]
+    } catch (error) {
+      console.log(error)
     }
-
-    const result = await this._pool.query(query)
-
-    if (!result.rows.length) throw new NotFoundError('Resource tidak ditemukan')
-
-    return result.rows[0]
   }
 
   async editResourceById (id, { name, description, type, price }) {
-    const updatedAt = await new GetLocalTime().getDate()
-    const query = {
-      text: 'UPDATE med_resources SET name = $1, description = $2, type = $3, price = $4, updated_at = $5 WHERE id = $6 AND deleted_at IS NULL RETURNING id',
-      values: [name, description, type, price, updatedAt, id]
+    try {
+      const updatedAt = await new GetLocalTime().getDate()
+      const query = {
+        text: 'UPDATE med_resources SET name = $1, description = $2, type = $3, price = $4, updated_at = $5 WHERE id = $6 AND deleted_at IS NULL RETURNING id',
+        values: [name, description, type, price, updatedAt, id]
+      }
+
+      const result = await this._pool.query(query)
+
+      if (!result.rows.length) throw new NotFoundError('Gagal memperbarui resource. Id tidak ditemukan')
+    } catch (error) {
+      console.log(error)
     }
-
-    const result = await this._pool.query(query)
-
-    if (!result.rows.length) throw new NotFoundError('Gagal memperbarui resource. Id tidak ditemukan')
   }
 
   async deleteResourceById (id) {
-    const deletedAt = await new GetLocalTime().getDate()
-    const query = {
-      text: 'UPDATE med_resources set deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
-      values: [deletedAt, id]
+    try {
+      const deletedAt = await new GetLocalTime().getDate()
+      const query = {
+        text: 'UPDATE med_resources set deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
+        values: [deletedAt, id]
+      }
+
+      const result = await this._pool.query(query)
+
+      if (!result.rows.length) throw new NotFoundError('Gagal menghapus resource. Id tidak ditemukan')
+    } catch (error) {
+      console.log(error)
     }
-
-    const result = await this._pool.query(query)
-
-    if (!result.rows.length) throw new NotFoundError('Gagal menghapus resource. Id tidak ditemukan')
   }
 }
 
