@@ -21,6 +21,14 @@ exports.up = pgm => {
       type: 'INTEGER',
       notNull: true
     },
+    discount: {
+      type: 'INTEGER',
+      notNull: false
+    },
+    discount_type: {
+      type: 'VARCHAR',
+      notNull: false
+    },
     created_at: {
       type: 'TEXT',
       notNull: true
