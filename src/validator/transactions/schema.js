@@ -2,7 +2,9 @@ const Joi = require('joi')
 
 const TransactionsSchema = Joi.object({
   resourceId: Joi.string().required(),
-  quantity: Joi.number().required()
+  quantity: Joi.number().required(),
+  discount: Joi.number().allow(null, ''),
+  discountType: Joi.string().allow(null, '')
 })
 
 const TransactionsPayloadSchema = Joi.object({
