@@ -4,6 +4,102 @@
   "items": [
     {
       "type": "folder",
+      "name": "auth",
+      "items": [
+        {
+          "type": "http",
+          "name": "Create Authentication Admin",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:5000/authentications",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"username\": \"{{username1}}\",\n  \"password\": \"{{password}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "const body = res.getBody()\n\nif (body.status === \"success\") {\n  bru.setEnvVar(\"accToken\", body.data.accessToken)\n  bru.setEnvVar(\"refToken\", body.data.refreshToken)\n  \n  bru.setNextRequest(\"Update Authentication Admin\")\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete Authentication Admin",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost:5000/authentications",
+            "method": "DELETE",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"refreshToken\": \"{{refToken}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"accToken\", \"\")\n  bru.setEnvVar(\"refToken\", \"\")\n  bru.setNextRequest(\"Delete Delete Admin 1 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update Authentication Admin",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:5000/authentications",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"refreshToken\": \"{{refToken}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "const body = res.getBody()\n\nif (body.status === \"success\") {\n  bru.setEnvVar(\"accToken\", body.data.accessToken)\n  \n  bru.setNextRequest(\"Create Owner 1\")\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
       "name": "admin",
       "items": [
         {
@@ -82,12 +178,17 @@
         },
         {
           "type": "http",
-          "name": "Get Admin by Username",
-          "seq": 4,
+          "name": "Delete Admin 1 by Id",
+          "seq": 6,
           "request": {
-            "url": "http://localhost:5000/admin?name=",
-            "method": "GET",
+            "url": "http://localhost:5000/admin/{{adminId1}}",
+            "method": "DELETE",
             "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              },
               {
                 "name": "Accept",
                 "value": "application/json",
@@ -100,7 +201,7 @@
               "multipartForm": []
             },
             "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Update Admin 2 by Id\")  \n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"adminId1\", \"\")\n}"
             },
             "vars": {},
             "assertions": [],
@@ -108,13 +209,7 @@
             "auth": {
               "mode": "none"
             },
-            "query": [
-              {
-                "name": "name",
-                "value": "",
-                "enabled": true
-              }
-            ]
+            "query": []
           }
         },
         {
@@ -143,74 +238,6 @@
             },
             "script": {
               "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"adminId2\", \"\")\n \n  bru.setNextRequest(\"Create Authentication Admin\")\n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Update Admin 2 by Id",
-          "seq": 5,
-          "request": {
-            "url": "http://localhost:5000/admin/{{adminId2}}",
-            "method": "PUT",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"username\": \"{{usernameUpdate}}\",\n  \"password\": \"{{passwordUpdate}}\",\n  \"confPassword\": \"{{confPasswordUpdate}}\",\n  \"fullname\": \"{{fullnameUpdate}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Delete Admin 2 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Admin 1 by Id",
-          "seq": 6,
-          "request": {
-            "url": "http://localhost:5000/admin/{{adminId1}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"adminId1\", \"\")\n}"
             },
             "vars": {},
             "assertions": [],
@@ -256,35 +283,28 @@
             },
             "query": []
           }
-        }
-      ]
-    },
-    {
-      "type": "folder",
-      "name": "auth",
-      "items": [
+        },
         {
           "type": "http",
-          "name": "Create Authentication Admin",
-          "seq": 1,
+          "name": "Get Admin by Username",
+          "seq": 4,
           "request": {
-            "url": "http://localhost:5000/authentications",
-            "method": "POST",
+            "url": "http://localhost:5000/admin?name=",
+            "method": "GET",
             "headers": [
               {
-                "name": "Content-Type",
+                "name": "Accept",
                 "value": "application/json",
                 "enabled": true
               }
             ],
             "body": {
-              "mode": "json",
-              "json": "{\n  \"username\": \"{{username1}}\",\n  \"password\": \"{{password}}\"\n}",
+              "mode": "none",
               "formUrlEncoded": [],
               "multipartForm": []
             },
             "script": {
-              "res": "const body = res.getBody()\n\nif (body.status === \"success\") {\n  bru.setEnvVar(\"accToken\", body.data.accessToken)\n  bru.setEnvVar(\"refToken\", body.data.refreshToken)\n  \n  bru.setNextRequest(\"Update Authentication Admin\")\n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Update Admin 2 by Id\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -292,15 +312,21 @@
             "auth": {
               "mode": "none"
             },
-            "query": []
+            "query": [
+              {
+                "name": "name",
+                "value": "",
+                "enabled": true
+              }
+            ]
           }
         },
         {
           "type": "http",
-          "name": "Update Authentication Admin",
-          "seq": 2,
+          "name": "Update Admin 2 by Id",
+          "seq": 5,
           "request": {
-            "url": "http://localhost:5000/authentications",
+            "url": "http://localhost:5000/admin/{{adminId2}}",
             "method": "PUT",
             "headers": [
               {
@@ -311,38 +337,12 @@
             ],
             "body": {
               "mode": "json",
-              "json": "{\n  \"refreshToken\": \"{{refToken}}\"\n}",
+              "json": "{\n  \"username\": \"{{usernameUpdate}}\",\n  \"password\": \"{{passwordUpdate}}\",\n  \"confPassword\": \"{{confPasswordUpdate}}\",\n  \"fullname\": \"{{fullnameUpdate}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": []
             },
             "script": {
-              "res": "const body = res.getBody()\n\nif (body.status === \"success\") {\n  bru.setEnvVar(\"accToken\", body.data.accessToken)\n  \n  bru.setNextRequest(\"Create Owner 1\")\n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Authentication Admin",
-          "seq": 3,
-          "request": {
-            "url": "http://localhost:5000/authentications",
-            "method": "DELETE",
-            "headers": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"refreshToken\": \"{{refToken}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"accToken\", \"\")\n  bru.setEnvVar(\"refToken\", \"\")\n  bru.setNextRequest(\"Delete Delete Admin 1 by Id\")  \n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Delete Admin 2 by Id\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -435,68 +435,6 @@
         },
         {
           "type": "http",
-          "name": "Get Pet Owner 2 by Owner Id",
-          "seq": 4,
-          "request": {
-            "url": "http://localhost:5000/pet-owner/{{petOwnerId2}}",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Create Transasction 1\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Get Pet Owner 1 by Owner Id",
-          "seq": 3,
-          "request": {
-            "url": "http://localhost:5000/pet-owner/{{petOwnerId1}}",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Pet Owner 2 by Owner Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
           "name": "Delete Pet Owner 1 by Id",
           "seq": 5,
           "request": {
@@ -547,6 +485,314 @@
             },
             "script": {
               "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"petOwnerId2\", \"\")\n  bru.setNextRequest(\"List Pets without Owner\")\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get Pet Owner 1 by Owner Id",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost:5000/pet-owner/{{petOwnerId1}}",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Pet Owner 2 by Owner Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get Pet Owner 2 by Owner Id",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost:5000/pet-owner/{{petOwnerId2}}",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Create Transasction 1\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "owners",
+      "items": [
+        {
+          "type": "http",
+          "name": "Create Owner 1",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:5000/owner",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"registerCode\": \"{{regCode1}}\",\n  \"name\": \"{{ownerName1}}\",\n  \"phone\": \"{{phone1}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"ownerId1\", res.getBody().data.ownerId)\n  \n  bru.setNextRequest(\"Create Owner 2\")\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Create Owner 2",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:5000/owner",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"registerCode\": \"{{regCode2}}\",\n  \"name\": \"{{ownerName2}}\",\n  \"phone\": \"{{phone2}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"ownerId2\", res.getBody().data.ownerId)\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete Owner 1 by Id",
+          "seq": 6,
+          "request": {
+            "url": "http://localhost:5000/owner/{{ownerId1}}",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"ownerId1\", \"\")\n  bru.setNextRequest(\"Delete Owner 2 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete Owner 2 by Id",
+          "seq": 7,
+          "request": {
+            "url": "http://localhost:5000/owner/{{ownerId2}}",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"ownerId2\", \"\")\n  bru.setNextRequest(\"Delete Authentication Admin\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get Owner 2 by Id",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost:5000/owner/{{ownerId2}}",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              },
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Update Owner 2 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "List Owners",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost:5000/owner",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              },
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Owner 2 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update Owner 2 by Id",
+          "seq": 5,
+          "request": {
+            "url": "http://localhost:5000/owner/{{ownerId2}}",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"registerCode\": \"{{regCodeUpdate}}\",\n  \"name\": \"{{ownerNameUpdate}}\",\n  \"phone\": \"{{phoneUpdate}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Create Pet 1\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -639,17 +885,12 @@
         },
         {
           "type": "http",
-          "name": "List Pets",
-          "seq": 3,
+          "name": "Delete Pet 1 by Id",
+          "seq": 7,
           "request": {
-            "url": "http://localhost:5000/pet",
-            "method": "GET",
+            "url": "http://localhost:5000/pet/{{petId1}}",
+            "method": "DELETE",
             "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
               {
                 "name": "Authorization",
                 "value": "Bearer {{accToken}}",
@@ -662,7 +903,38 @@
               "multipartForm": []
             },
             "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Pet 2 by Id\")  \n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"petId1\", \"\")\n  bru.setNextRequest(\"Delete Pet 2 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete Pet 2 by Id",
+          "seq": 8,
+          "request": {
+            "url": "http://localhost:5000/pet/{{petId2}}",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"petId2\", \"\")\n  bru.setNextRequest(\"Delete Owner 1 by Id\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -711,74 +983,6 @@
         },
         {
           "type": "http",
-          "name": "Update Pet 2 by Id",
-          "seq": 6,
-          "request": {
-            "url": "http://localhost:5000/pet",
-            "method": "PUT",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              },
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"name\" : \"{{petNameUpdate}}\",\n  \"type\" : \"{{petTypeUpdate}}\",\n  \"race\" : \"{{petRaceUpdate}}\",\n  \"gender\" : \"{{petGenderUpdate}}\",\n  \"birthdate\" : \"{{petBD}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"petId2\", res.getBody().data.petId)\n\n  bru.setNextRequest(\"Create Resource 1\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Pet 2 by Id",
-          "seq": 8,
-          "request": {
-            "url": "http://localhost:5000/pet/{{petId2}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"petId2\", \"\")\n  bru.setNextRequest(\"Delete Owner 1 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
           "name": "List Pets without Owner",
           "seq": 4,
           "request": {
@@ -815,47 +1019,10 @@
         },
         {
           "type": "http",
-          "name": "Delete Pet 1 by Id",
-          "seq": 7,
-          "request": {
-            "url": "http://localhost:5000/pet/{{petId1}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"petId1\", \"\")\n  bru.setNextRequest(\"Delete Pet 2 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        }
-      ]
-    },
-    {
-      "type": "folder",
-      "name": "transactions",
-      "items": [
-        {
-          "type": "http",
-          "name": "List Transaction Detail",
+          "name": "List Pets",
           "seq": 3,
           "request": {
-            "url": "http://localhost:5000/transaction/detail",
+            "url": "http://localhost:5000/pet",
             "method": "GET",
             "headers": [
               {
@@ -875,7 +1042,7 @@
               "multipartForm": []
             },
             "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Transaction Detail 2 by Id\")  \n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Pet 2 by Id\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -888,193 +1055,11 @@
         },
         {
           "type": "http",
-          "name": "Create Transaction 2",
-          "seq": 2,
-          "request": {
-            "url": "http://localhost:5000/transaction",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              },
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"ownerId\" : \"{{ownerId2}}\",\n  \"transactionsData\": [\n    {\n      \"resourceId\" : \"{{rscId1}}\",\n      \"quantity\" : \"{{rscQty1}}\"\n    },\n    {\n      \"resourceId\" : \"{{rscId2}}\",\n      \"quantity\" : \"{{rscQty2}}\"\n    }\n  ]\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transDetId2\", res.getBody().data.transactionDetailId.transactionId)\n  \n  let index = 2\n  for (const tsc in res.getBody().data.transactionDetailId.transactionItems) {\n    bru.setEnvVar(`transId${++index}`, res.getBody().data.transactionDetailId.transactionItems[tsc].trans_item)\n  }\n  bru.setNextRequest(\"Create Transasction 2\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Create Transaction 1",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost:5000/transaction",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              },
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"ownerId\": \"{{ownerId1}}\",\n  \"transactionsData\": [\n    {\n      \"resourceId\": \"{{rscId1}}\",\n      \"quantity\": \"{{rscQty1}}\",\n      \"discount\": \"0\",\n      \"discountType\": \"\"\n    },\n    {\n      \"resourceId\": \"{{rscId2}}\",\n      \"quantity\": \"{{rscQty2}}\",\n      \"discount\": \"0\",\n      \"discountType\": \"\"\n    }\n  ]\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transDetId1\", res.getBody().data.transactionDetailId.transactionId)\n  \n  let index = 0\n  for (const tsc in res.getBody().data.transactionDetailId.transactionItems) {\n    bru.setEnvVar(`transId${++index}`, res.getBody().data.transactionDetailId.transactionItems[tsc].trans_item)\n  }\n  bru.setNextRequest(\"Create Transasction 2\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Get Transaction Detail 2 by Id",
-          "seq": 4,
-          "request": {
-            "url": "http://localhost:5000/transaction/detail/{{transDetId2}}",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Transaction Detail 2 by Owner Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Transaction Detail 2 by Id",
-          "seq": 10,
-          "request": {
-            "url": "http://localhost:5000/transaction/detail/{{transDetId2}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transDetId2\", \"\")\n  bru.setNextRequest(\"Delete Pet Owner 1 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Get Transaction Detail 2 by Owner Id",
-          "seq": 5,
-          "request": {
-            "url": "http://localhost:5000/transaction/detail/owner/{{ownerId2}}",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"List Transactions\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "List Transactions",
+          "name": "Update Pet 2 by Id",
           "seq": 6,
           "request": {
-            "url": "http://localhost:5000/transaction",
-            "method": "GET",
+            "url": "http://localhost:5000/pet",
+            "method": "PUT",
             "headers": [
               {
                 "name": "Authorization",
@@ -1082,126 +1067,19 @@
                 "enabled": true
               },
               {
-                "name": "Accept",
+                "name": "Content-Type",
                 "value": "application/json",
                 "enabled": true
               }
             ],
             "body": {
-              "mode": "none",
+              "mode": "json",
+              "json": "{\n  \"name\" : \"{{petNameUpdate}}\",\n  \"type\" : \"{{petTypeUpdate}}\",\n  \"race\" : \"{{petRaceUpdate}}\",\n  \"gender\" : \"{{petGenderUpdate}}\",\n  \"birthdate\" : \"{{petBD}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": []
             },
             "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Delete Transaction 1 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Transaction 2 by Id",
-          "seq": 9,
-          "request": {
-            "url": "http://localhost:5000/transaction/{{transId2}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transId2\", \"\")\n  bru.setNextRequest(\"Delete Transaction Detail 2 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Transaction Detail 1 by Id",
-          "seq": 8,
-          "request": {
-            "url": "http://localhost:5000/transaction/detail/{{transDetId1}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transDetId1\", \"\")\n  bru.setNextRequest(\"Delete Transaction 2 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Transaction 1 by Id",
-          "seq": 7,
-          "request": {
-            "url": "http://localhost:5000/transaction/{{transId1}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transId1\", \"\")\n   bru.setNextRequest(\"Delete Transaction Detail 1 by Id\") \n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"petId2\", res.getBody().data.petId)\n\n  bru.setNextRequest(\"Create Resource 1\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -1282,6 +1160,78 @@
             },
             "script": {
               "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"rscId2\", res.getBody().data.resourceId)\n  bru.setNextRequest(\"List Resources\")\n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete Resource 1 by Id",
+          "seq": 6,
+          "request": {
+            "url": "http://localhost:5000/resource/{{rscId1}}",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"rscId1\", \"\")\n\n  bru.setNextRequest(\"Delete Resource 2 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete Resource 2 by Id",
+          "seq": 7,
+          "request": {
+            "url": "http://localhost:5000/resource/{{rscId2}}",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"rscId2\", \"\")\n  bru.setNextRequest(\"Delete Pet 1 by Id\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -1395,91 +1345,19 @@
             },
             "query": []
           }
-        },
-        {
-          "type": "http",
-          "name": "Delete Resource 2 by Id",
-          "seq": 7,
-          "request": {
-            "url": "http://localhost:5000/resource/{{rscId2}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"rscId2\", \"\")\n  bru.setNextRequest(\"Delete Pet 1 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Resource 1 by Id",
-          "seq": 6,
-          "request": {
-            "url": "http://localhost:5000/resource/{{rscId1}}",
-            "method": "DELETE",
-            "headers": [
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              },
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"rscId1\", \"\")\n\n  bru.setNextRequest(\"Delete Resource 2 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
         }
       ]
     },
     {
       "type": "folder",
-      "name": "owners",
+      "name": "transactions",
       "items": [
         {
           "type": "http",
-          "name": "Create Owner 1",
+          "name": "Create Transaction 1",
           "seq": 1,
           "request": {
-            "url": "http://localhost:5000/owner",
+            "url": "http://localhost:5000/transaction",
             "method": "POST",
             "headers": [
               {
@@ -1495,12 +1373,12 @@
             ],
             "body": {
               "mode": "json",
-              "json": "{\n  \"registerCode\": \"{{regCode1}}\",\n  \"name\": \"{{ownerName1}}\",\n  \"phone\": \"{{phone1}}\"\n}",
+              "json": "{\n  \"ownerId\": \"{{ownerId1}}\",\n  \"transactionsData\": [\n    {\n      \"resourceId\": \"{{rscId1}}\",\n      \"quantity\": \"{{rscQty1}}\",\n      \"price\": \"{{rscPrice1}}\",\n      \"discount\": \"0\",\n      \"discountType\": \"\"\n    },\n    {\n      \"resourceId\": \"{{rscId2}}\",\n      \"quantity\": \"{{rscQty2}}\",\n      \"price\": \"{{rscPrice2}}\",\n      \"discount\": \"0\",\n      \"discountType\": \"\"\n    }\n  ]\n}",
               "formUrlEncoded": [],
               "multipartForm": []
             },
             "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"ownerId1\", res.getBody().data.ownerId)\n  \n  bru.setNextRequest(\"Create Owner 2\")\n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transDetId1\", res.getBody().data.transactionDetailId.transactionId)\n  \n  let index = 0\n  for (const tsc in res.getBody().data.transactionDetailId.transactionItems) {\n    bru.setEnvVar(`transId${++index}`, res.getBody().data.transactionDetailId.transactionItems[tsc].trans_item)\n  }\n  bru.setNextRequest(\"Create Transasction 2\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -1513,10 +1391,10 @@
         },
         {
           "type": "http",
-          "name": "Create Owner 2",
+          "name": "Create Transaction 2",
           "seq": 2,
           "request": {
-            "url": "http://localhost:5000/owner",
+            "url": "http://localhost:5000/transaction",
             "method": "POST",
             "headers": [
               {
@@ -1532,12 +1410,12 @@
             ],
             "body": {
               "mode": "json",
-              "json": "{\n  \"registerCode\": \"{{regCode2}}\",\n  \"name\": \"{{ownerName2}}\",\n  \"phone\": \"{{phone2}}\"\n}",
+              "json": "{\n  \"ownerId\": \"{{ownerId2}}\",\n  \"transactionsData\": [\n    {\n      \"resourceId\": \"{{rscId1}}\",\n      \"quantity\": \"{{rscQty1}}\",\n      \"price\": \"{{rscPrice1}}\",\n      \"discount\": \"0\",\n      \"discountType\": \"\"\n    },\n    {\n      \"resourceId\": \"{{rscId2}}\",\n      \"quantity\": \"{{rscQty2}}\",\n      \"price\": \"{{rscPrice2}}\",\n      \"discount\": \"0\",\n      \"discountType\": \"\"\n    }\n  ]\n}",
               "formUrlEncoded": [],
               "multipartForm": []
             },
             "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"ownerId2\", res.getBody().data.ownerId)\n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transDetId2\", res.getBody().data.transactionDetailId.transactionId)\n  \n  let index = 2\n  for (const tsc in res.getBody().data.transactionDetailId.transactionItems) {\n    bru.setEnvVar(`transId${++index}`, res.getBody().data.transactionDetailId.transactionItems[tsc].trans_item)\n  }\n  bru.setNextRequest(\"Create Transasction 2\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -1550,116 +1428,17 @@
         },
         {
           "type": "http",
-          "name": "List Owners",
-          "seq": 3,
-          "request": {
-            "url": "http://localhost:5000/owner",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              },
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Owner 2 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Update Owner 2 by Id",
-          "seq": 5,
-          "request": {
-            "url": "http://localhost:5000/owner/{{ownerId2}}",
-            "method": "PUT",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"registerCode\": \"{{regCodeUpdate}}\",\n  \"name\": \"{{ownerNameUpdate}}\",\n  \"phone\": \"{{phoneUpdate}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Create Pet 1\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Get Owner 2 by Id",
-          "seq": 4,
-          "request": {
-            "url": "http://localhost:5000/owner/{{ownerId2}}",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "Authorization",
-                "value": "Bearer {{accToken}}",
-                "enabled": true
-              },
-              {
-                "name": "Accept",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Update Owner 2 by Id\")  \n}"
-            },
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "auth": {
-              "mode": "none"
-            },
-            "query": []
-          }
-        },
-        {
-          "type": "http",
-          "name": "Delete Owner 2 by Id",
+          "name": "Delete Transaction 1 by Id",
           "seq": 7,
           "request": {
-            "url": "http://localhost:5000/owner/{{ownerId2}}",
+            "url": "http://localhost:5000/transaction/{{transId1}}",
             "method": "DELETE",
             "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
               {
                 "name": "Authorization",
                 "value": "Bearer {{accToken}}",
@@ -1672,7 +1451,7 @@
               "multipartForm": []
             },
             "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"ownerId2\", \"\")\n  bru.setNextRequest(\"Delete Authentication Admin\")  \n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transId1\", \"\")\n   bru.setNextRequest(\"Delete Transaction Detail 1 by Id\") \n}"
             },
             "vars": {},
             "assertions": [],
@@ -1685,12 +1464,17 @@
         },
         {
           "type": "http",
-          "name": "Delete Owner 1 by Id",
-          "seq": 6,
+          "name": "Delete Transaction 2 by Id",
+          "seq": 9,
           "request": {
-            "url": "http://localhost:5000/owner/{{ownerId1}}",
+            "url": "http://localhost:5000/transaction/{{transId2}}",
             "method": "DELETE",
             "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
               {
                 "name": "Authorization",
                 "value": "Bearer {{accToken}}",
@@ -1703,7 +1487,223 @@
               "multipartForm": []
             },
             "script": {
-              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"ownerId1\", \"\")\n  bru.setNextRequest(\"Delete Owner 2 by Id\")  \n}"
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transId2\", \"\")\n  bru.setNextRequest(\"Delete Transaction Detail 2 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete Transaction Detail 1 by Id",
+          "seq": 8,
+          "request": {
+            "url": "http://localhost:5000/transaction/detail/{{transDetId1}}",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transDetId1\", \"\")\n  bru.setNextRequest(\"Delete Transaction 2 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Delete Transaction Detail 2 by Id",
+          "seq": 10,
+          "request": {
+            "url": "http://localhost:5000/transaction/detail/{{transDetId2}}",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setEnvVar(\"transDetId2\", \"\")\n  bru.setNextRequest(\"Delete Pet Owner 1 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get Transaction Detail 2 by Id",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost:5000/transaction/detail/{{transDetId2}}",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Transaction Detail 2 by Owner Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get Transaction Detail 2 by Owner Id",
+          "seq": 5,
+          "request": {
+            "url": "http://localhost:5000/transaction/detail/owner/{{ownerId2}}",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"List Transactions\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "List Transaction Detail",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost:5000/transaction/detail",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Get Transaction Detail 2 by Id\")  \n}"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            },
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "List Transactions",
+          "seq": 6,
+          "request": {
+            "url": "http://localhost:5000/transaction",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{accToken}}",
+                "enabled": true
+              },
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {
+              "res": "if (res.getBody().status === \"success\") {\n  bru.setNextRequest(\"Delete Transaction 1 by Id\")  \n}"
             },
             "vars": {},
             "assertions": [],
@@ -1717,20 +1717,20 @@
       ]
     }
   ],
-  "activeEnvironmentUid": "6TIjjmcwevnFQ9AzbzBDe",
+  "activeEnvironmentUid": "8wZsVKvCSI8SlOCsHToxj",
   "environments": [
     {
       "variables": [
         {
           "name": "accToken",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluLVN1dE1DbE1yIiwiaWF0IjoxNzE2OTUzNTU3fQ.m0o--MEPA96wZU5THOTAW2UIfo31nN0kS_m6QoltbUA",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "refToken",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluLVN1dE1DbE1yIiwiaWF0IjoxNzE2OTUzNTQyfQ.1TDVnNhVdDPYqXt9hGdSpoEbRbA542J2rmyPobciQKU",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -1821,14 +1821,14 @@
         },
         {
           "name": "rscId1",
-          "value": "resource-cF-JVJ_A",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "rscId2",
-          "value": "resource-N5ykyVaK",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -1905,14 +1905,14 @@
         },
         {
           "name": "ownerId1",
-          "value": "owner-sGceKPCa",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "ownerId2",
-          "value": "owner-kmyPt0QO",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -2003,14 +2003,14 @@
         },
         {
           "name": "petId1",
-          "value": "pet-CmEicD-T",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "petId2",
-          "value": "pet-WM58hFZz",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -2031,14 +2031,14 @@
         },
         {
           "name": "transDetId1",
-          "value": "transaction-jE5VJX79",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "transId1",
-          "value": "trans_item-MZvzH-OV",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -2052,21 +2052,21 @@
         },
         {
           "name": "transDetId2",
-          "value": "transaction-eG5AFmdo",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "transId2",
-          "value": "trans_item-93lEcWtR",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "adminId1",
-          "value": "admin-SutMClMr",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -2129,14 +2129,14 @@
         },
         {
           "name": "transId3",
-          "value": "trans_item-9n66xTq9",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "transId4",
-          "value": "trans_item-ZT6eZK4l",
+          "value": "",
           "enabled": true,
           "secret": false,
           "type": "text"

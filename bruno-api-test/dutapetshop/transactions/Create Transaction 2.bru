@@ -17,15 +17,21 @@ headers {
 
 body:json {
   {
-    "ownerId" : "{{ownerId2}}",
+    "ownerId": "{{ownerId2}}",
     "transactionsData": [
       {
-        "resourceId" : "{{rscId1}}",
-        "quantity" : "{{rscQty1}}"
+        "resourceId": "{{rscId1}}",
+        "quantity": "{{rscQty1}}",
+        "price": "{{rscPrice1}}",
+        "discount": "0",
+        "discountType": ""
       },
       {
-        "resourceId" : "{{rscId2}}",
-        "quantity" : "{{rscQty2}}"
+        "resourceId": "{{rscId2}}",
+        "quantity": "{{rscQty2}}",
+        "price": "{{rscPrice2}}",
+        "discount": "0",
+        "discountType": ""
       }
     ]
   }
