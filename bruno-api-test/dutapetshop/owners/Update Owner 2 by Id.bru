@@ -1,0 +1,29 @@
+meta {
+  name: Update Owner 2 by Id
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:5000/owner/{{ownerId2}}
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+}
+
+body:json {
+  {
+    "registerCode": "{{regCodeUpdate}}",
+    "name": "{{ownerNameUpdate}}",
+    "phone": "{{phoneUpdate}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setNextRequest("Create Pet 1")  
+  }
+}

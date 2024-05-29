@@ -1,0 +1,30 @@
+meta {
+  name: Update Admin 2 by Id
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:5000/admin/{{adminId2}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "{{usernameUpdate}}",
+    "password": "{{passwordUpdate}}",
+    "confPassword": "{{confPasswordUpdate}}",
+    "fullname": "{{fullnameUpdate}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setNextRequest("Delete Admin 2 by Id")  
+  }
+}

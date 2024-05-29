@@ -1,0 +1,32 @@
+meta {
+  name: Create Resource 2
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/resource
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "{{rscName2}}",
+    "description": "{{rscDesc2}}",
+    "type": "{{rscType2}}",
+    "price": "{{rscQty2}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("rscId2", res.getBody().data.resourceId)
+    bru.setNextRequest("List Resources")
+  }
+}

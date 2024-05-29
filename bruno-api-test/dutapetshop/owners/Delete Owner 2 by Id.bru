@@ -1,0 +1,22 @@
+meta {
+  name: Delete Owner 2 by Id
+  type: http
+  seq: 7
+}
+
+delete {
+  url: http://localhost:5000/owner/{{ownerId2}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("ownerId2", "")
+    bru.setNextRequest("Delete Authentication Admin")  
+  }
+}

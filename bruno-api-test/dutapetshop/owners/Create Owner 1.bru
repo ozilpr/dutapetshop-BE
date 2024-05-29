@@ -1,0 +1,32 @@
+meta {
+  name: Create Owner 1
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:5000/owner
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "registerCode": "{{regCode1}}",
+    "name": "{{ownerName1}}",
+    "phone": "{{phone1}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("ownerId1", res.getBody().data.ownerId)
+    
+    bru.setNextRequest("Create Owner 2")
+  }
+}

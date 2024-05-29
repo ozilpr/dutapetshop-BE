@@ -1,0 +1,22 @@
+meta {
+  name: Delete Admin 1 by Id
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:5000/admin/{{adminId1}}
+  body: none
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("adminId1", "")
+  }
+}

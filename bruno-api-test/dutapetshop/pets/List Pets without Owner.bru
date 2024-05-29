@@ -1,0 +1,22 @@
+meta {
+  name: List Pets without Owner
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:5000/pet/without-owner
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setNextRequest("Delete Resource 1 by Id")  
+  }
+}

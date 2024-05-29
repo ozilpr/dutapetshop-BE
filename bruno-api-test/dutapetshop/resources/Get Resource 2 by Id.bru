@@ -1,0 +1,22 @@
+meta {
+  name: Get Resource 2 by Id
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:5000/resource
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setNextRequest("Update Resource 2 by Id")  
+  }
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Delete Owner 1 by Id
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:5000/owner/{{ownerId1}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("ownerId1", "")
+    bru.setNextRequest("Delete Owner 2 by Id")  
+  }
+}

@@ -1,0 +1,44 @@
+meta {
+  name: Create Transaction 2
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/transaction
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "ownerId" : "{{ownerId2}}",
+    "transactionsData": [
+      {
+        "resourceId" : "{{rscId1}}",
+        "quantity" : "{{rscQty1}}"
+      },
+      {
+        "resourceId" : "{{rscId2}}",
+        "quantity" : "{{rscQty2}}"
+      }
+    ]
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("transDetId2", res.getBody().data.transactionDetailId.transactionId)
+    
+    let index = 2
+    for (const tsc in res.getBody().data.transactionDetailId.transactionItems) {
+      bru.setEnvVar(`transId${++index}`, res.getBody().data.transactionDetailId.transactionItems[tsc].trans_item)
+    }
+    bru.setNextRequest("Create Transasction 2")  
+  }
+}

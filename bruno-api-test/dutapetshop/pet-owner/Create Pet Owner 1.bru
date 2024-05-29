@@ -1,0 +1,31 @@
+meta {
+  name: Create Pet Owner 1
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:5000/pet-owner
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "ownerId": "{{ownerId1}}",
+    "petId": "{{petId1}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("petOwnerId1", res.getBody().data.petOwnerId)
+      bru.setNextRequest("Create Pet Owner 2")  
+  
+  }
+}

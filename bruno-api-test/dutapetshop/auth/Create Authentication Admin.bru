@@ -1,0 +1,33 @@
+meta {
+  name: Create Authentication Admin
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:5000/authentications
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "{{username1}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  const body = res.getBody()
+  
+  if (body.status === "success") {
+    bru.setEnvVar("accToken", body.data.accessToken)
+    bru.setEnvVar("refToken", body.data.refreshToken)
+    
+    bru.setNextRequest("Update Authentication Admin")
+  }
+}

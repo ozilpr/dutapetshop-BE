@@ -1,0 +1,22 @@
+meta {
+  name: Delete Pet 2 by Id
+  type: http
+  seq: 8
+}
+
+delete {
+  url: http://localhost:5000/pet/{{petId2}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("petId2", "")
+    bru.setNextRequest("Delete Owner 1 by Id")  
+  }
+}

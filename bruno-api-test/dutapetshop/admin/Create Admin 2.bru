@@ -1,0 +1,32 @@
+meta {
+  name: Create Admin 2
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/admin
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "username": "{{username2}}",
+    "password": "{{password}}",
+    "confPassword": "{{confPassword}}",
+    "fullname": "{{fullname2}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("adminId2", res.getBody().data.adminId)
+    bru.setNextRequest("Get Admin 2 by Id")
+  }
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Get Transaction Detail 2 by Owner Id
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:5000/transaction/detail/owner/{{ownerId2}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setNextRequest("List Transactions")  
+  }
+}

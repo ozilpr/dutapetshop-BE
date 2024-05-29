@@ -1,0 +1,22 @@
+meta {
+  name: Delete Pet Owner 2 by Id
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:5000/pet-owner/{{petOwnerId2}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("petOwnerId2", "")
+    bru.setNextRequest("List Pets without Owner")
+  }
+}

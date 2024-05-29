@@ -1,0 +1,23 @@
+meta {
+  name: Delete Transaction 2 by Id
+  type: http
+  seq: 9
+}
+
+delete {
+  url: http://localhost:5000/transaction/{{transId2}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("transId2", "")
+    bru.setNextRequest("Delete Transaction Detail 2 by Id")  
+  }
+}

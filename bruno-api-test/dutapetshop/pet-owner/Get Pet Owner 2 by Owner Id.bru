@@ -1,0 +1,21 @@
+meta {
+  name: Get Pet Owner 2 by Owner Id
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:5000/pet-owner/{{petOwnerId2}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setNextRequest("Create Transasction 1")  
+  }
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Delete Authentication Admin
+  type: http
+  seq: 3
+}
+
+delete {
+  url: http://localhost:5000/authentications
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "refreshToken": "{{refToken}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("accToken", "")
+    bru.setEnvVar("refToken", "")
+    bru.setNextRequest("Delete Delete Admin 1 by Id")  
+  }
+}

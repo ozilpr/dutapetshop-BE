@@ -1,0 +1,23 @@
+meta {
+  name: Delete Resource 2 by Id
+  type: http
+  seq: 7
+}
+
+delete {
+  url: http://localhost:5000/resource/{{rscId2}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{accToken}}
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("rscId2", "")
+    bru.setNextRequest("Delete Pet 1 by Id")  
+  }
+}

@@ -1,0 +1,33 @@
+meta {
+  name: Create Pet 2
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/pet
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name" : "{{petName2}}",
+    "type" : "{{petType2}}",
+    "race" : "{{petRace2}}",
+    "gender" : "{{petGender2}}",
+    "birthdate" : "{{petBD}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("petId2", res.getBody().data.petId)
+    bru.setNextRequest("List Pets")
+  }
+}

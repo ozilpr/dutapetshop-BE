@@ -1,0 +1,34 @@
+meta {
+  name: Update Pet 2 by Id
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:5000/pet
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name" : "{{petNameUpdate}}",
+    "type" : "{{petTypeUpdate}}",
+    "race" : "{{petRaceUpdate}}",
+    "gender" : "{{petGenderUpdate}}",
+    "birthdate" : "{{petBD}}"
+  }
+}
+
+script:post-response {
+  if (res.getBody().status === "success") {
+    bru.setEnvVar("petId2", res.getBody().data.petId)
+  
+    bru.setNextRequest("Create Resource 1")  
+  }
+}

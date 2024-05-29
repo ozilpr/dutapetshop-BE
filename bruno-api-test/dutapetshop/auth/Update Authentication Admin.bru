@@ -1,0 +1,31 @@
+meta {
+  name: Update Authentication Admin
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:5000/authentications
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "refreshToken": "{{refToken}}"
+  }
+}
+
+script:post-response {
+  const body = res.getBody()
+  
+  if (body.status === "success") {
+    bru.setEnvVar("accToken", body.data.accessToken)
+    
+    bru.setNextRequest("Create Owner 1")
+  }
+}
