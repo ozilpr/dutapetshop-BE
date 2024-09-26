@@ -3,43 +3,51 @@
 ### Create Transaction
 
 Request :
+
 - Method : Post
 - Endpoint : `/transaction`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
 - Body :
+
 ```json
 {
-  "ownerId" : "string, unique",
-  "transactionData" : [
+  "ownerId": "string, unique",
+  "totalPrice": "number",
+  "transactionData": [
     {
-      "resourceId" : "string, unique",
-      "quantity" : "number",
-      "price" : "number",
-      "discount" : "number"
+      "resourceId": "string, unique",
+      "quantity": "number",
+      "price": "number",
+      "discount": "string",
+      "finalPrice": "number"
     },
     {
-      "resourceId" : "string, unique",
-      "quantity" : "number"
+      "resourceId": "string, unique",
+      "quantity": "number",
+      "price": "number",
+      "discount": "string",
+      "finalPrice": "number"
     }
   ]
 }
 ```
 
-Response : 
+Response :
+
 ```json
 {
-  "status" : "string",
-  "message" : "string",
-  "data" : {
-    "transactionDetailId" : "string, unique",
-     "transactionsId" : [
+  "status": "string",
+  "message": "string",
+  "data": {
+    "transactionDetailId": "string, unique",
+    "transactionsId": [
       {
-        "trans_id" : "string, unique"
+        "trans_id": "string, unique"
       },
       {
-        "trans_id" : "string, unique"
+        "trans_id": "string, unique"
       }
     ]
   }
@@ -47,54 +55,67 @@ Response :
 ```
 
 ### List Transaction Details
+
 Request :
+
 - Method : Get
 - Endpoint : `/transaction/detail`
 - Header :
   - Accept : application/json
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "data" : [
+  "status": "string",
+  "data": [
     {
-      "transaction_id" : "string, unique",
-      "owner_id" : "string, unique",
-      "owner_name" : "string",
-      "register_code" : "string, unique",
-      "transactionItems" : [
+      "transaction_id": "string, unique",
+      "owner_id": "string, unique",
+      "owner_name": "string",
+      "register_code": "string, unique",
+      "total_price": "number",
+      "transactionItems": [
         {
-          "id" : "string, unique",
-          "resource_name" : "string",
-          "quantity" : "number",
-          "price" : "number",
+          "id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number",
+          "discount": "string",
+          "final_price": "number"
         },
         {
-          "id" : "string, unique",
-          "resource_name" : "string",
-          "quantity" : "number",
-          "price" : "number",
+          "id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number",
+          "discount": "string",
+          "final_price": "number"
         }
       ]
     },
     {
-      "transaction_id" : "string, unique",
-      "owner_id" : "string, unique",
-      "owner_name" : "string",
-      "register_code" : "string, unique",
-      "transactionItems" : [
+      "transaction_id": "string, unique",
+      "owner_id": "string, unique",
+      "owner_name": "string",
+      "register_code": "string, unique",
+      "total_price": "number",
+      "transactionItems": [
         {
-          "id" : "string, unique",
-          "resource_name" : "string",
-          "quantity" : "number",
-          "price" : "number",
+          "id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number",
+          "discount": "string",
+          "final_price": "number"
         },
         {
-          "id" : "string, unique",
-          "resource_name" : "string",
-          "quantity" : "number",
-          "price" : "number",
+          "id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number",
+          "discount": "string",
+          "final_price": "number"
         }
       ]
     }
@@ -105,32 +126,39 @@ Response :
 ### Get Transaction Detail By Id
 
 Request :
+
 - Method : Get
 - Endpoint : `/transaction/detail/{id}`
 - Header :
   - Accept : application/json
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "data" : {
-    "transaction_id" : "string, unique",
-    "owner_id" : "string, unique",
-    "owner_name" : "string",
-    "register_code" : "string, unique",
-    "transactionItems" : [
+  "status": "string",
+  "data": {
+    "transaction_id": "string, unique",
+    "owner_id": "string, unique",
+    "owner_name": "string",
+    "register_code": "string, unique",
+    "total_price": "number",
+    "transactionItems": [
       {
-        "id" : "string, unique",
-        "resource_name" : "string",
-        "quantity" : "number",
-        "price" : "number",
+        "id": "string, unique",
+        "resource_name": "string",
+        "quantity": "number",
+        "price": "number",
+        "discount": "string",
+        "final_price": "number"
       },
       {
-        "id" : "string, unique",
-        "resource_name" : "string",
-        "quantity" : "number",
-        "price" : "number",
+        "id": "string, unique",
+        "resource_name": "string",
+        "quantity": "number",
+        "price": "number",
+        "discount": "string",
+        "final_price": "number"
       }
     ]
   }
@@ -140,172 +168,155 @@ Response :
 ### Get Transaction Detail by Owner Id
 
 Request :
+
 - Method : Get
 - Endpoint : `/transaction/detail/owner/{ownerId}`
 - Header :
   - Accept : application/json
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "data" : [
+  "status": "string",
+  "data": [
     {
-      "transaction_id" : "string, unique",
-      "owner_id" : "string, unique",
-      "owner_name" : "string",
-      "register_code" : "string, unique",
-      "transactionItems" : [
+      "transaction_id": "string, unique",
+      "owner_id": "string, unique",
+      "owner_name": "string",
+      "register_code": "string, unique",
+      "total_price": "number",
+      "transactionItems": [
         {
-          "id" : "string, unique",
-          "resource_name" : "string",
-          "quantity" : "number",
-          "price" : "number",
+          "id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number",
+          "discount": "string",
+          "final_price": "number"
         },
         {
-          "id" : "string, unique",
-          "resource_name" : "string",
-          "quantity" : "number",
-          "price" : "number",
+          "id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number",
+          "discount": "string",
+          "final_price": "number"
         }
       ]
     },
     {
-      "transaction_id" : "string, unique",
-      "owner_id" : "string, unique",
-      "owner_name" : "string",
-      "register_code" : "string, unique",
-      "transactionItems" : [
+      "transaction_id": "string, unique",
+      "owner_id": "string, unique",
+      "owner_name": "string",
+      "register_code": "string, unique",
+      "transactionItems": [
         {
-          "id" : "string, unique",
-          "resource_name" : "string",
-          "quantity" : "number",
-          "price" : "number",
+          "id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number",
+          "discount": "string",
+          "final_price": "number"
         },
         {
-          "id" : "string, unique",
-          "resource_name" : "string",
-          "quantity" : "number",
-          "price" : "number",
+          "id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number",
+          "discount": "string",
+          "final_price": "number"
         }
       ]
     }
   ]
-}
-```
-
-### Edit Transaction Detail by Id (is this really neccessary? prolly will disable this)
-
-Request :
-- Method : Put
-- Endpoint : `/transaction/detail/{id}`
-- Header :
-  - Content-Type : application/json
-  - Accept : application/json
-- Body :
-```json
-{
-  "ownerId" : "string, unique"
-}
-```
-
-Response :
-```json
-{
-  "status" : "string",
-  "message" : "string"
 }
 ```
 
 ### Delete Transaction Detail by Id
 
 Request :
+
 - Method : Delete
 - Endpoint : `/transaction/detail/{id}`
 - Header :
   - Accept : application/json
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "message" : "string"
+  "status": "string",
+  "message": "string"
 }
 ```
 
 ### List Transactions
 
 Request :
+
 - Method : Get
 - Endpoint : `/transaction`
 - Header :
   - Accept : application/json
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "data" : [
+  "status": "string",
+  "data": [
     {
-      "id" : "string, unique",
-      "transaction_id" : "string, unique",
-      "resource_id" : "string, unique",
-      "resource_name" : "string",
-      "quantity" : "number",
-      "price" : "number",
-      "created_at" : "string",
-      "updated_at" : "string"
+      "id": "string, unique",
+      "transaction_id": "string, unique",
+      "resource_id": "string, unique",
+      "resource_name": "string",
+      "quantity": "number",
+      "price": "number",
+      "discount": "string",
+      "final_price": "number",
+      "created_at": "string",
+      "updated_at": "string"
     },
     {
-      "id" : "string, unique",
-      "transaction_id" : "string, unique",
-      "resource_id" : "string, unique",
-      "resource_name" : "string",
-      "quantity" : "number",
-      "price" : "number",
-      "created_at" : "string",
-      "updated_at" : "string"
+      "id": "string, unique",
+      "transaction_id": "string, unique",
+      "resource_id": "string, unique",
+      "resource_name": "string",
+      "quantity": "number",
+      "price": "number",
+      "discount": "string",
+      "final_price": "number",
+      "created_at": "string",
+      "updated_at": "string"
     }
   ]
 }
 ```
 
-### Update Transaction by Transaction Id
-
-Request :
-- Method : Put
-- Endpoint : `/transaction/{transactionId}`
-- Header : 
-  - Accept : application/json
-- Body :
-```json
-{
-  "resourceId" : "string, unique",
-  "quantity" : "number",
-  "price" : "number"
-}
-```
-
 Response :
+
 ```json
 {
-  "status" : "string",
-  "message" : "string"
+  "status": "string",
+  "message": "string"
 }
 ```
 
 ### Delete Transaction by Id
 
 Request :
+
 - Method : Delete
 - Endpoint : `/transaction/{id}`
-- Header : 
+- Header :
   - Accept : application/json
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "message" : "string"
+  "status": "string",
+  "message": "string"
 }
 ```
