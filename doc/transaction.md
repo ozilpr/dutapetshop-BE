@@ -1,4 +1,4 @@
-## Transaction API Spec (unfinished)
+## Transaction API Spec (unfinished, due client ask for changes)
 
 ### Create Transaction
 
@@ -20,14 +20,14 @@ Request :
       "resourceId": "string, unique",
       "quantity": "number",
       "price": "number",
-      "discount": "string",
+      "discount": "number",
       "finalPrice": "number"
     },
     {
       "resourceId": "string, unique",
       "quantity": "number",
       "price": "number",
-      "discount": "string",
+      "discount": "number",
       "finalPrice": "number"
     }
   ]
@@ -81,7 +81,7 @@ Response :
           "resource_name": "string",
           "quantity": "number",
           "price": "number",
-          "discount": "string",
+          "discount": "number",
           "final_price": "number"
         },
         {
@@ -89,7 +89,7 @@ Response :
           "resource_name": "string",
           "quantity": "number",
           "price": "number",
-          "discount": "string",
+          "discount": "number",
           "final_price": "number"
         }
       ]
@@ -106,7 +106,7 @@ Response :
           "resource_name": "string",
           "quantity": "number",
           "price": "number",
-          "discount": "string",
+          "discount": "number",
           "final_price": "number"
         },
         {
@@ -114,7 +114,7 @@ Response :
           "resource_name": "string",
           "quantity": "number",
           "price": "number",
-          "discount": "string",
+          "discount": "number",
           "final_price": "number"
         }
       ]
@@ -149,7 +149,7 @@ Response :
         "resource_name": "string",
         "quantity": "number",
         "price": "number",
-        "discount": "string",
+        "discount": "number",
         "final_price": "number"
       },
       {
@@ -157,7 +157,7 @@ Response :
         "resource_name": "string",
         "quantity": "number",
         "price": "number",
-        "discount": "string",
+        "discount": "number",
         "final_price": "number"
       }
     ]
@@ -192,7 +192,7 @@ Response :
           "resource_name": "string",
           "quantity": "number",
           "price": "number",
-          "discount": "string",
+          "discount": "number",
           "final_price": "number"
         },
         {
@@ -200,7 +200,7 @@ Response :
           "resource_name": "string",
           "quantity": "number",
           "price": "number",
-          "discount": "string",
+          "discount": "number",
           "final_price": "number"
         }
       ]
@@ -216,7 +216,7 @@ Response :
           "resource_name": "string",
           "quantity": "number",
           "price": "number",
-          "discount": "string",
+          "discount": "number",
           "final_price": "number"
         },
         {
@@ -224,7 +224,7 @@ Response :
           "resource_name": "string",
           "quantity": "number",
           "price": "number",
-          "discount": "string",
+          "discount": "number",
           "final_price": "number"
         }
       ]
@@ -273,7 +273,7 @@ Response :
       "resource_name": "string",
       "quantity": "number",
       "price": "number",
-      "discount": "string",
+      "discount": "number",
       "final_price": "number",
       "created_at": "string",
       "updated_at": "string"
@@ -285,7 +285,7 @@ Response :
       "resource_name": "string",
       "quantity": "number",
       "price": "number",
-      "discount": "string",
+      "discount": "number",
       "final_price": "number",
       "created_at": "string",
       "updated_at": "string"
