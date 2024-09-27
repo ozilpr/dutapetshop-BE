@@ -51,12 +51,12 @@ Response :
 }
 ```
 
-### List Transaction Details
+### List Transactions
 
 Request :
 
 - Method : Get
-- Endpoint : `/transaction/detail`
+- Endpoint : `/transaction`
 - Header :
   - Accept : application/json
 
@@ -114,12 +114,12 @@ Response :
 }
 ```
 
-### Get Transaction Detail By Id
+### Get Transaction By Id
 
 Request :
 
 - Method : Get
-- Endpoint : `/transaction/detail/{id}`
+- Endpoint : `/transaction/{id}`
 - Header :
   - Accept : application/json
 
@@ -153,7 +153,7 @@ Response :
 }
 ```
 
-### Get Transaction Detail by Owner Id
+### Get Transactions by Owner Id
 
 Request :
 
