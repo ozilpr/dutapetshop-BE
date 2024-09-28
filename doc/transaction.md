@@ -67,21 +67,22 @@ Response :
   "status": "string",
   "data": [
     {
-      "transaction_id": "string, unique",
+      "id": "string, unique",
       "owner_id": "string, unique",
       "owner_name": "string",
       "register_code": "string, unique",
       "discount": "number",
       "total_price": "number",
-      "transactionItems": [
+      "transaction_date": "string",
+      "transaction_items": [
         {
-          "id": "string, unique",
+          "item_id": "string, unique",
           "resource_name": "string",
           "quantity": "number",
           "price": "number"
         },
         {
-          "id": "string, unique",
+          "item_id": "string, unique",
           "resource_name": "string",
           "quantity": "number",
           "price": "number"
@@ -89,21 +90,22 @@ Response :
       ]
     },
     {
-      "transaction_id": "string, unique",
+      "id": "string, unique",
       "owner_id": "string, unique",
       "owner_name": "string",
       "register_code": "string, unique",
       "discount": "number",
       "total_price": "number",
-      "transactionItems": [
+      "transaction_date": "string",
+      "transaction_items": [
         {
-          "id": "string, unique",
+          "item_id": "string, unique",
           "resource_name": "string",
           "quantity": "number",
           "price": "number"
         },
         {
-          "id": "string, unique",
+          "item_id": "string, unique",
           "resource_name": "string",
           "quantity": "number",
           "price": "number"
@@ -129,21 +131,22 @@ Response :
 {
   "status": "string",
   "data": {
-    "transaction_id": "string, unique",
+    "id": "string, unique",
     "owner_id": "string, unique",
     "owner_name": "string",
     "register_code": "string, unique",
     "discount": "number",
     "total_price": "number",
-    "transactionItems": [
+    "transaction_date": "string",
+    "transaction_items": [
       {
-        "id": "string, unique",
+        "item_id": "string, unique",
         "resource_name": "string",
         "quantity": "number",
         "price": "number"
       },
       {
-        "id": "string, unique",
+        "item_id": "string, unique",
         "resource_name": "string",
         "quantity": "number",
         "price": "number"
@@ -169,46 +172,49 @@ Response :
   "status": "string",
   "data": [
     {
-      "transaction_id": "string, unique",
       "owner_id": "string, unique",
       "owner_name": "string",
       "register_code": "string, unique",
-      "discount": "number",
-      "total_price": "number",
-      "transactionItems": [
+      "transactions": [
         {
           "id": "string, unique",
-          "resource_name": "string",
-          "quantity": "number",
-          "price": "number"
+          "discount": "number",
+          "total_price": "number",
+          "transaction_date": "string",
+          "transaction_items": [
+            {
+              "item_id": "string, unique",
+              "resource_name": "string",
+              "quantity": "number",
+              "price": "number"
+            },
+            {
+              "item_id": "string, unique",
+              "resource_name": "string",
+              "quantity": "number",
+              "price": "number"
+            }
+          ]
         },
         {
           "id": "string, unique",
-          "resource_name": "string",
-          "quantity": "number",
-          "price": "number"
-        }
-      ]
-    },
-    {
-      "transaction_id": "string, unique",
-      "owner_id": "string, unique",
-      "owner_name": "string",
-      "register_code": "string, unique",
-      "discount": "number",
-      "total_price": "number",
-      "transactionItems": [
-        {
-          "id": "string, unique",
-          "resource_name": "string",
-          "quantity": "number",
-          "price": "number"
-        },
-        {
-          "id": "string, unique",
-          "resource_name": "string",
-          "quantity": "number",
-          "price": "number"
+          "discount": "number",
+          "total_price": "number",
+          "transaction_date": "string",
+          "transaction_items": [
+            {
+              "item_id": "string, unique",
+              "resource_name": "string",
+              "quantity": "number",
+              "price": "number"
+            },
+            {
+              "item_id": "string, unique",
+              "resource_name": "string",
+              "quantity": "number",
+              "price": "number"
+            }
+          ]
         }
       ]
     }
