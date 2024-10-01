@@ -23,10 +23,6 @@ exports.up = (pgm) => {
         type: 'INTEGER',
         notNull: true
       },
-      finalPrice: {
-        type: 'INTEGER',
-        notNull: true
-      },
       created_at: {
         type: 'TEXT',
         notNull: true
