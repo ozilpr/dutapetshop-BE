@@ -37,7 +37,7 @@ class PetOwnerService {
   }
 
   async getPetOwnerByOwnerId(ownerId) {
-    const queryCombined = {
+    const query = {
       text: `
         SELECT DISTINCT
           po.owner_id,
@@ -58,17 +58,17 @@ class PetOwnerService {
       values: [ownerId]
     }
 
-    const resultCombined = await this._pool.query(queryCombined)
+    const result = await this._pool.query(query)
 
-    if (!resultCombined.rows.length) throw new NotFoundError('Owner belum memiliki peliharaan')
+    if (!result.rows.length) throw new NotFoundError('Owner belum memiliki peliharaan')
 
     const data = {
       owner: {
-        owner_id: resultCombined.rows[0].owner_id,
-        owner_name: resultCombined.rows[0].owner_name,
-        register_code: resultCombined.rows[0].register_code
+        owner_id: result.rows[0].owner_id,
+        owner_name: result.rows[0].owner_name,
+        register_code: result.rows[0].register_code
       },
-      pets: resultCombined.rows.map((row) => ({
+      pets: result.rows.map((row) => ({
         pet_owner_id: row.pet_owner_id,
         pet_id: row.pet_id,
         pet_name: row.pet_name
