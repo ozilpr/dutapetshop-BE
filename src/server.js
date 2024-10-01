@@ -148,7 +148,7 @@ const init = async () => {
 
       const newResponse = h.response({
         status: 'error',
-        message: 'terjadi kegagalan pada server kami'
+        message: 'terjadi kegagalan pada server'
       })
       newResponse.code(500)
       return newResponse
