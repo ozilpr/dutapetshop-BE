@@ -7,11 +7,21 @@ const AuthenticationError = require('../../exceptions/AuthenticationsError')
 const GetLocalTime = require('../../utils/getLocalTime')
 
 class AdminService {
-  constructor () {
+  constructor() {
     this._pool = new Pool()
   }
 
-  async addAdmin ({ username, password, confPassword, fullname }) {
+  async checkIfAdminExists(auth) {
+    const isExists = await this._pool.query('SELECT id FROM admin LIMIT 1')
+
+    if (isExists) {
+      if (!auth.isAuthenticated) {
+        throw new AuthenticationError('Anda harus login terlebih dahulu')
+      }
+    }
+  }
+
+  async addAdmin({ username, password, confPassword, fullname }) {
     await this.verifyPassword(password, confPassword)
     await this.verifyNewUsername(username)
 
@@ -32,7 +42,7 @@ class AdminService {
     return result.rows[0].id
   }
 
-  async getAdminById (id) {
+  async getAdminById(id) {
     const query = {
       text: 'SELECT id, username, fullname, created_at FROM admin WHERE id = $1 AND deleted_at IS NULL',
       values: [id]
@@ -45,7 +55,7 @@ class AdminService {
     return result.rows[0]
   }
 
-  async getAdminByName ({ name }) {
+  async getAdminByName({ name }) {
     const query = {
       text: `
         SELECT
@@ -72,11 +82,11 @@ class AdminService {
     return result.rows
   }
 
-  async verifyPassword (password, confPassword) {
+  async verifyPassword(password, confPassword) {
     if (password !== confPassword) throw new InvariantError('Password dan Konfirmasi password tidak cocok')
   }
 
-  async verifyNewUsername (username) {
+  async verifyNewUsername(username) {
     const query = {
       text: 'SELECT username FROM admin WHERE username LIKE $1 AND deleted_at IS NULL',
       values: [username]
@@ -86,7 +96,7 @@ class AdminService {
     if (result.rows.length > 0) throw new InvariantError('Username sudah digunakan')
   }
 
-  async verifyEditNewUsername (username, id) {
+  async verifyEditNewUsername(username, id) {
     const query = {
       text: 'SELECT username FROM admin WHERE username LIKE $1 AND deleted_at IS NULL',
       values: [username]
@@ -107,7 +117,7 @@ class AdminService {
     }
   }
 
-  async verifyCredential (username, password) {
+  async verifyCredential(username, password) {
     const query = {
       text: 'SELECT id, username, password FROM admin WHERE username = $1 AND deleted_at IS NULL',
       values: [username]
@@ -130,10 +140,9 @@ class AdminService {
     return id
   }
 
-  async verifyEditAdmin (id, username, fullname, password) {
+  async verifyEditAdmin(id, username, fullname, password) {
     const newAdmin = {}
 
-    // Check if username, fullname, and password are provided
     if (username !== '' && username !== null) {
       newAdmin.username = username
     }
@@ -174,7 +183,7 @@ class AdminService {
     return newAdmin
   }
 
-  async editAdminById (id, { username, password, confPassword, fullname }) {
+  async editAdminById(id, { username, password, confPassword, fullname }) {
     await this.verifyPassword(password, confPassword)
     await this.verifyEditNewUsername(username, id)
     const newAdmin = await this.verifyEditAdmin(id, username, fullname, password)
@@ -191,7 +200,7 @@ class AdminService {
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui admin. Id tidak ditemukan')
   }
 
-  async deleteAdminById (id) {
+  async deleteAdminById(id) {
     const deletedAt = await new GetLocalTime().getDate()
     const query = {
       text: 'UPDATE admin SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
