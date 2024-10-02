@@ -9,6 +9,7 @@ Request :
 - Header :
   - Content-Type : application/json
   - Accept : application/json
+  - Authorization : Bearer token
 - Body :
 
 ```json
@@ -59,6 +60,7 @@ Request :
 - Endpoint : `/transaction`
 - Header :
   - Accept : application/json
+  - Authorization : Bearer token
 
 Response :
 
@@ -124,6 +126,7 @@ Request :
 - Endpoint : `/transaction/{id}`
 - Header :
   - Accept : application/json
+  - Authorization : Bearer token
 
 Response :
 
@@ -164,6 +167,7 @@ Request :
 - Endpoint : `/transaction/detail/owner/{ownerId}`
 - Header :
   - Accept : application/json
+  - Authorization : Bearer token
 
 Response :
 
@@ -230,6 +234,7 @@ Request :
 - Endpoint : `/transaction/{id}`
 - Header :
   - Accept : application/json
+  - Authorization : Bearer token
 
 Response :
 

@@ -2,29 +2,33 @@
 
 ### Create Resource
 
-Request : 
+Request :
+
 - Method : POST
 - Endpoint : `/resource`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
+  - Authorization : Bearer token
 - Body :
+
 ```json
 {
-  "name" : "string",
-  "description" : "string",
-  "type" : "string",
-  "price" : "number"
+  "name": "string",
+  "description": "string",
+  "type": "string",
+  "price": "number"
 }
 ```
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "message" : "string",
-  "data" : {
-    "resourceId" : "string, unique"
+  "status": "string",
+  "message": "string",
+  "data": {
+    "resourceId": "string, unique"
   }
 }
 ```
@@ -32,33 +36,36 @@ Response :
 ### List Resources
 
 Request :
+
 - Method : GET
 - Endpoint : `/resource`
 - Header :
   - Accept : application/json
+  - Authorization : Bearer token
 
 Response :
+
 ```json
 {
-  "status" : "string",
+  "status": "string",
   "data": [
     {
-      "id" : "string, unique",
-      "name" : "string",
-      "description" : "string",
-      "type" : "string",
-      "price" : "number",
-      "created_at" : "string",
-      "updated_at" : "string"
+      "id": "string, unique",
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "price": "number",
+      "created_at": "string",
+      "updated_at": "string"
     },
     {
-      "id" : "string, unique",
-      "name" : "string",
-      "description" : "string",
-      "type" : "string",
-      "price" : "number",
-      "created_at" : "string",
-      "updated_at" : "string"
+      "id": "string, unique",
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "price": "number",
+      "created_at": "string",
+      "updated_at": "string"
     }
   ]
 }
@@ -66,66 +73,76 @@ Response :
 
 ### Get Resource by Id
 
-Request : 
+Request :
+
 - Method : Get
 - Endpoint : `/resource/{id}`
 - Header :
   - Accept : application/json
+  - Authorization : Bearer token
 
-Response : 
+Response :
+
 ```json
 {
-  "status" : "string",
-  "data" : {
-    "id" : "string, unique",
-    "name" : "string",
-    "description" : "string",
-    "type" : "string",
-    "price" : "number",
-    "created_at" : "string",
-    "updated_at" : "string"
+  "status": "string",
+  "data": {
+    "id": "string, unique",
+    "name": "string",
+    "description": "string",
+    "type": "string",
+    "price": "number",
+    "created_at": "string",
+    "updated_at": "string"
   }
 }
 ```
 
 ### Update Resource by Id
 
-Request : 
+Request :
+
 - Method : Put
 - Endpoint : `/resource/{id}`
 - Header :
   - Content-Type : application/json
   - Accept : application/json
+  - Authorization : Bearer token
 - Body :
+
 ```json
 {
-    "name" : "string",
-    "description" : "string",
-    "type" : "string",
-    "price" : "number",
+  "name": "string",
+  "description": "string",
+  "type": "string",
+  "price": "number"
 }
 ```
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "message" : "string"
+  "status": "string",
+  "message": "string"
 }
 ```
 
 ### Delete Resource
 
 Request :
+
 - Method : Delete
 - Endpoint : `/resource/{id}`
 - Header :
   - Accept : application/json
+  - Authorization : Bearer token
 
 Response :
+
 ```json
 {
-  "status" : "string",
-  "message" : "string"
+  "status": "string",
+  "message": "string"
 }
 ```
