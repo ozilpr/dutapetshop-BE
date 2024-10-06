@@ -1,11 +1,11 @@
 meta {
   name: Delete Transaction 1 by Id
   type: http
-  seq: 7
+  seq: 8
 }
 
 delete {
-  url: http://localhost:5000/transaction/{{transId1}}
+  url: http://localhost:5000/transaction/{{transDetId1}}
   body: none
   auth: none
 }
@@ -17,7 +17,7 @@ headers {
 
 script:post-response {
   if (res.getBody().status === "success") {
-    bru.setEnvVar("transId1", "")
-     bru.setNextRequest("Delete Transaction Detail 1 by Id") 
+    bru.setEnvVar("transDetId1", "")
+    bru.setNextRequest("Delete Transaction 2 by Id")  
   }
 }

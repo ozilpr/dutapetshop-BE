@@ -18,20 +18,18 @@ headers {
 body:json {
   {
     "ownerId": "{{ownerId2}}",
+    "totalPrice": {{totalPrice2}},
+    "discount": {{discount2}},
     "transactionsData": [
       {
         "resourceId": "{{rscId1}}",
         "quantity": "{{rscQty1}}",
-        "price": "{{rscPrice1}}",
-        "discount": "0",
-        "discountType": ""
+        "price": "{{rscPrice1}}"
       },
       {
         "resourceId": "{{rscId2}}",
         "quantity": "{{rscQty2}}",
-        "price": "{{rscPrice2}}",
-        "discount": "0",
-        "discountType": ""
+        "price": "{{rscPrice2}}"
       }
     ]
   }
@@ -39,12 +37,12 @@ body:json {
 
 script:post-response {
   if (res.getBody().status === "success") {
-    bru.setEnvVar("transDetId2", res.getBody().data.transactionDetailId.transactionId)
+    bru.setEnvVar("transDetId2", res.getBody().data.transactionId)
     
     let index = 2
-    for (const tsc in res.getBody().data.transactionDetailId.transactionItems) {
-      bru.setEnvVar(`transId${++index}`, res.getBody().data.transactionDetailId.transactionItems[tsc].trans_item)
+    for (const tsc in res.getBody().data.transactionItems) {
+      bru.setEnvVar(`transId${++index}`, res.getBody().data.transactionItems.trans_id[tsc])
     }
-    bru.setNextRequest("Create Transasction 2")  
+    bru.setNextRequest("Get Transaction 2 by Id")  
   }
 }

@@ -1,11 +1,11 @@
 meta {
-  name: Get Resource 2 by Id
+  name: Get Transaction 2 by Owner Id
   type: http
-  seq: 4
+  seq: 5
 }
 
 get {
-  url: http://localhost:5000/resource/{{rscId2}}
+  url: http://localhost:5000/transaction/owner/{{ownerId2}}
   body: none
   auth: none
 }
@@ -17,6 +17,6 @@ headers {
 
 script:post-response {
   if (res.getBody().status === "success") {
-    bru.setNextRequest("Update Resource 2 by Id")  
+    bru.setNextRequest("List Transactions")  
   }
 }

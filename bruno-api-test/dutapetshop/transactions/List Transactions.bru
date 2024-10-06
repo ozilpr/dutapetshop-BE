@@ -1,7 +1,7 @@
 meta {
   name: List Transactions
   type: http
-  seq: 6
+  seq: 3
 }
 
 get {
@@ -11,12 +11,6 @@ get {
 }
 
 headers {
-  Authorization: Bearer {{accToken}}
   Accept: application/json
-}
-
-script:post-response {
-  if (res.getBody().status === "success") {
-    bru.setNextRequest("Delete Transaction 1 by Id")  
-  }
+  Authorization: Bearer {{accToken}}
 }
