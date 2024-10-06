@@ -9,16 +9,16 @@ class TransactionsHandler {
   }
 
   async addTransactionHandler(request, h) {
-    console.log(request.payload)
     await this._validator.validateTransactionPayload(request.payload)
 
-    const transactions = await this._service.addTransaction(request.payload)
+    const { transactionId, transactionItems } = await this._service.addTransaction(request.payload)
 
     const response = h.response({
       status: 'success',
       messagge: 'Transaksi berhasil ditambahkan',
       data: {
-        transactions
+        transactionId: transactionId,
+        transactionItems: transactionItems
       }
     })
     response.code(201)
