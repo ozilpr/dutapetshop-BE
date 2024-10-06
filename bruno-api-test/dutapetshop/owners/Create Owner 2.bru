@@ -26,5 +26,7 @@ body:json {
 script:post-response {
   if (res.getBody().status === "success") {
     bru.setEnvVar("ownerId2", res.getBody().data.ownerId)
+    
+    bru.setNextRequest("List Owners")
   }
 }

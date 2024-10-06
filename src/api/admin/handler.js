@@ -1,15 +1,18 @@
 const autoBind = require('auto-bind')
+const AuthenticationError = require('../../exceptions/AuthenticationsError')
 
 class AdminHandler {
-  constructor (service, validator) {
+  constructor(service, validator) {
     this._service = service
     this._validator = validator
 
     autoBind(this)
   }
 
-  async addAdminHandler (request, h) {
+  async addAdminHandler(request, h) {
     await this._validator.validateAdminPayload(request.payload)
+
+    await this._service.checkIfAdminExists(request.auth)
 
     const adminId = await this._service.addAdmin(request.payload)
 
@@ -24,7 +27,7 @@ class AdminHandler {
     return response
   }
 
-  async getAdminByIdHandler (request) {
+  async getAdminByIdHandler(request) {
     const { id } = request.params
     const admin = await this._service.getAdminById(id)
 
@@ -36,7 +39,7 @@ class AdminHandler {
     }
   }
 
-  async getAdminByNameHandler (request) {
+  async getAdminByNameHandler(request) {
     const admin = await this._service.getAdminByName(request.query)
 
     return {
@@ -47,7 +50,7 @@ class AdminHandler {
     }
   }
 
-  async editAdminByIdHandler (request) {
+  async editAdminByIdHandler(request) {
     await this._validator.validateUpdateAdminPayload(request.payload)
 
     const { id } = request.params
@@ -59,7 +62,7 @@ class AdminHandler {
     }
   }
 
-  async deleteAdminByIdHandler (request) {
+  async deleteAdminByIdHandler(request) {
     const { id } = request.params
     await this._service.deleteAdminById(id)
 

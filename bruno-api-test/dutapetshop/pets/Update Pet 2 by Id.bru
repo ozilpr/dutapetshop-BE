@@ -27,7 +27,7 @@ body:json {
 
 script:post-response {
   if (res.getBody().status === "success") {
-    bru.setEnvVar("petId2", res.getBody().data.petId)
+    await bru.setEnvVar("petId2", res.getBody().data.petId)
   
     bru.setNextRequest("Create Resource 1")  
   }

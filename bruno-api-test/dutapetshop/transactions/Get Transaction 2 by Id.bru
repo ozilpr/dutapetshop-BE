@@ -1,11 +1,11 @@
 meta {
-  name: List Transaction Detail
+  name: Get Transaction 2 by Id
   type: http
-  seq: 3
+  seq: 4
 }
 
 get {
-  url: http://localhost:5000/transaction/detail
+  url: http://localhost:5000/transaction/{{transDetId2}}
   body: none
   auth: none
 }
@@ -17,6 +17,6 @@ headers {
 
 script:post-response {
   if (res.getBody().status === "success") {
-    bru.setNextRequest("Get Transaction Detail 2 by Id")  
+    bru.setNextRequest("Get Transaction 2 by Owner Id")  
   }
 }

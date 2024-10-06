@@ -5,11 +5,11 @@ const NotFoundError = require('../../exceptions/NotFoundError')
 const GetLocalTime = require('../../utils/getLocalTime')
 
 class PetOwnerService {
-  constructor () {
+  constructor() {
     this._pool = new Pool()
   }
 
-  async verifyPetOwner ({ ownerId, petId }) {
+  async verifyPetOwner({ ownerId, petId }) {
     const query = {
       text: 'SELECT owner_id, pet_id FROM pet_owner WHERE owner_id = $1 AND pet_id = $2',
       values: [ownerId, petId]
@@ -20,7 +20,7 @@ class PetOwnerService {
     if (result.rows.length) throw new InvariantError('Peliharaan sudah ditambahkan')
   }
 
-  async addPetOwner ({ ownerId, petId }) {
+  async addPetOwner({ ownerId, petId }) {
     const id = `powner-${nanoid(8)}`
     const createdAt = await new GetLocalTime().getDate()
 
@@ -36,31 +36,14 @@ class PetOwnerService {
     return result.rows[0]
   }
 
-  async getPetOwnerByOwnerId (ownerId) {
-    const queryOwner = {
+  async getPetOwnerByOwnerId(ownerId) {
+    const query = {
       text: `
         SELECT DISTINCT
           po.owner_id,
           o.name AS owner_name,
-          o.register_code
-        FROM
-          pet_owner po
-          INNER JOIN owners o ON po.owner_id = o.id
-          INNER JOIN pets p ON po.pet_id = p.id
-        WHERE
-          po.owner_id = $1
-        AND
-          o.deleted_at IS NULL
-        AND
-          p.deleted_at IS NULL
-      `,
-      values: [ownerId]
-    }
-
-    const queryPet = {
-      text: `
-        SELECT DISTINCT
-          po.id,
+          o.register_code,
+          po.id AS pet_owner_id,
           po.pet_id,
           p.name AS pet_name
         FROM
@@ -69,27 +52,33 @@ class PetOwnerService {
           INNER JOIN pets p ON po.pet_id = p.id
         WHERE
           po.owner_id = $1
-        AND
-          o.deleted_at IS NULL
-        AND
-          p.deleted_at IS NULL
+          AND o.deleted_at IS NULL
+          AND p.deleted_at IS NULL
       `,
       values: [ownerId]
     }
 
-    const resultOwner = await this._pool.query(queryOwner)
+    const result = await this._pool.query(query)
 
-    if (!resultOwner.rows.length) throw new NotFoundError('Owner belum memiliki peliharaan')
+    if (!result.rows.length) throw new NotFoundError('Owner belum memiliki peliharaan')
 
-    const resultPet = await this._pool.query(queryPet)
+    const data = {
+      owner: {
+        owner_id: result.rows[0].owner_id,
+        owner_name: result.rows[0].owner_name,
+        register_code: result.rows[0].register_code
+      },
+      pets: result.rows.map((row) => ({
+        pet_owner_id: row.pet_owner_id,
+        pet_id: row.pet_id,
+        pet_name: row.pet_name
+      }))
+    }
 
-    return ({
-      owner: resultOwner.rows[0],
-      pets: resultPet.rows
-    })
+    return data
   }
 
-  async deletePetOwnerById (id) {
+  async deletePetOwnerById(id) {
     const query = {
       text: 'DELETE FROM pet_owner WHERE id = $1 AND deleted_at IS NULL RETURNING id',
       values: [id]
