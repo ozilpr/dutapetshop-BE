@@ -164,7 +164,7 @@ Response :
 Request :
 
 - Method : Get
-- Endpoint : `/transaction/detail/owner/{ownerId}`
+- Endpoint : `/transaction/owner/{ownerId}`
 - Header :
   - Accept : application/json
   - Authorization : Bearer token
