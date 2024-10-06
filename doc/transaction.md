@@ -39,8 +39,8 @@ Response :
   "status": "string",
   "message": "string",
   "data": {
-    "transactionDetailId": "string, unique",
-    "transactionsId": [
+    "transactionId": "string, unique",
+    "transactionItems": [
       {
         "trans_id": "string, unique"
       },
