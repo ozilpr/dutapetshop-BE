@@ -1,5 +1,4 @@
 const autoBind = require('auto-bind')
-const AuthenticationError = require('../../exceptions/AuthenticationsError')
 
 class AdminHandler {
   constructor(service, validator) {
