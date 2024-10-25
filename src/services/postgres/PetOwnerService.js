@@ -80,7 +80,7 @@ class PetOwnerService {
 
   async deletePetOwnerById(id) {
     const query = {
-      text: 'DELETE FROM pet_owner WHERE id = $1 AND deleted_at IS NULL RETURNING id',
+      text: 'DELETE FROM pet_owner WHERE id = $1 RETURNING id',
       values: [id]
     }
 
