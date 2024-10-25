@@ -1,5 +1,5 @@
 const InvariantError = require('../../exceptions/InvariantError')
-const { TransactionsPayloadSchema, TransactionQuerySchema } = require('./schema')
+const { TransactionsPayloadSchema, TransactionQuerySchema, TransactionParamsSchema } = require('./schema')
 
 const TransactionsValidator = {
   validateTransactionPayload: (payload) => {
@@ -8,6 +8,10 @@ const TransactionsValidator = {
   },
   validateTransactionQuery: (query) => {
     const validationResult = TransactionQuerySchema.validate(query)
+    if (validationResult.error) throw new InvariantError(validationResult.error.message)
+  },
+  validateTransactionParams: (params) => {
+    const validationResult = TransactionParamsSchema.validate(params)
     if (validationResult.error) throw new InvariantError(validationResult.error.message)
   }
 }

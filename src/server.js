@@ -36,6 +36,9 @@ const transactions = require('./api/transactions')
 const TransactionsService = require('./services/postgres/TransactionsService')
 const TransactionsValidator = require('./validator/transactions')
 
+// Pdf
+const PdfService = require('./services/puppeteer/PdfService')
+
 // pet owner
 const petOwner = require('./api/pet-owner')
 const PetOwnerService = require('./services/postgres/PetOwnerService')
@@ -47,6 +50,7 @@ const init = async () => {
   const adminService = new AdminService()
   const authenticationsService = new AuthenticationsService()
   const transactionsService = new TransactionsService()
+  const pdfService = new PdfService()
   const petOwnerService = new PetOwnerService()
 
   const server = Hapi.server({
@@ -74,6 +78,12 @@ const init = async () => {
       maxAgeSec: process.env.ACCESS_TOKEN_AGE
     },
     validate: false
+    // (artifacts) => ({
+    //   isValid: true,
+    //   credentials: {
+    //     id: artifacts.decoded.payload.id
+    //   }
+    // })
   })
 
   await server.register([
@@ -117,7 +127,8 @@ const init = async () => {
     {
       plugin: transactions,
       options: {
-        service: transactionsService,
+        transactionsService,
+        pdfService,
         validator: TransactionsValidator
       }
     },

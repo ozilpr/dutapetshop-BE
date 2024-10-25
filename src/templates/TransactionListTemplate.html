@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaction Report {{startDate}} - {{endDate}}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+        margin: 20px;
+      }
+      h1 {
+        text-align: center;
+        font-size: 16px;
+      }
+      h2 {
+        text-align: center;
+        font-size: 10px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0px;
+      }
+      th {
+        border: 1px solid black;
+      }
+      th,
+      td {
+        padding: 1px;
+        font-size: 10px;
+      }
+      .total {
+        font-weight: bold;
+        margin-top: 20px;
+      }
+      .header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+      .avoid {
+        page-break-inside: avoid !important;
+      }
+      td {
+        border: 1px solid black;
+      }
+      .no-border-bl {
+        border-left: 0;
+        border-bottom: 0;
+        border-top: 0;
+      }
+      .text-left {
+        text-align: right;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-red {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Laporan Transaksi</h1>
+    <h2>{{startDate}} - {{endDate}}</h2>
+    {{#each transactions}}
+    <div class="header avoid">
+      <p><strong>Owner:</strong> {{register_code}} - {{owner_name}}</p>
+      <p><strong>Tanggal Transaksi:</strong> {{transaction_date}}</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="text-center">No</th>
+          <th class="text-center">Nama Item</th>
+          <th class="text-center">Jumlah</th>
+          <th class="text-center">Harga</th>
+          <th class="text-center">Sub Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each transaction_items}}
+        <tr>
+          <td class="text-center">{{index @index}}</td>
+          <td>{{resource_name}}</td>
+          <td class="text-center">{{quantity}}</td>
+          <td class="text-left">{{formatIDR price}}</td>
+          <td class="text-left">{{multiply quantity price}}</td>
+        </tr>
+        {{/each}}
+        <tr>
+          <td colspan="3" class="no-border-bl"></td>
+          <td class="text-left">Diskon:</td>
+          <td class="text-left text-red">-{{formatIDR discount}}</td>
+        </tr>
+        <tr>
+          <td colspan="3" class="no-border-bl"></td>
+          <td class="text-left">Total:</td>
+          <td class="text-left">{{formatIDR total_price}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <hr />
+    {{/each}}
+  </body>
+</html>
