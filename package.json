@@ -28,10 +28,12 @@
     "auto-bind": "^4.0.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",
+    "handlebars": "^4.7.8",
     "joi": "^17.12.2",
     "nanoid": "^3.3.7",
     "node-cmd": "^5.0.0",
     "node-pg-migrate": "^6.2.2",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "puppeteer": "^23.6.0"
   }
 }
