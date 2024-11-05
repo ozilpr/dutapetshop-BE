@@ -17,16 +17,16 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/transaction/{id}',
-    handler: handler.getTransactionByIdHandler,
+    path: '/transaction/owner/{ownerId}',
+    handler: handler.getTransactionsByOwnerIdHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }
   },
   {
     method: 'GET',
-    path: '/transaction/owner/{ownerId}',
-    handler: handler.getTransactionsByOwnerIdHandler,
+    path: '/transaction/export',
+    handler: handler.generateTransactionPdfHandler,
     options: {
       auth: 'dutapetshop_jwt'
     }

@@ -118,53 +118,12 @@ Response :
 }
 ```
 
-### Get Transaction By Id
-
-Request :
-
-- Method : Get
-- Endpoint : `/transaction/{id}`
-- Header :
-  - Accept : application/json
-  - Authorization : Bearer token
-
-Response :
-
-```json
-{
-  "status": "string",
-  "data": {
-    "id": "string, unique",
-    "owner_id": "string, unique",
-    "owner_name": "string",
-    "register_code": "string, unique",
-    "discount": "number",
-    "total_price": "number",
-    "transaction_date": "string",
-    "transaction_items": [
-      {
-        "item_id": "string, unique",
-        "resource_name": "string",
-        "quantity": "number",
-        "price": "number"
-      },
-      {
-        "item_id": "string, unique",
-        "resource_name": "string",
-        "quantity": "number",
-        "price": "number"
-      }
-    ]
-  }
-}
-```
-
 ### Get Transactions by Owner Id
 
 Request :
 
 - Method : Get
-- Endpoint : `/transaction/detail/owner/{ownerId}`
+- Endpoint : `/transaction/owner/{ownerId}`
 - Header :
   - Accept : application/json
   - Authorization : Bearer token
@@ -176,55 +135,75 @@ Response :
   "status": "string",
   "data": [
     {
+      "id": "string, unique",
       "owner_id": "string, unique",
       "owner_name": "string",
       "register_code": "string, unique",
-      "transactions": [
+      "discount": "number",
+      "total_price": "number",
+      "transaction_date": "string",
+      "transaction_items": [
         {
-          "id": "string, unique",
-          "discount": "number",
-          "total_price": "number",
-          "transaction_date": "string",
-          "transaction_items": [
-            {
-              "item_id": "string, unique",
-              "resource_name": "string",
-              "quantity": "number",
-              "price": "number"
-            },
-            {
-              "item_id": "string, unique",
-              "resource_name": "string",
-              "quantity": "number",
-              "price": "number"
-            }
-          ]
+          "item_id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number"
         },
         {
-          "id": "string, unique",
-          "discount": "number",
-          "total_price": "number",
-          "transaction_date": "string",
-          "transaction_items": [
-            {
-              "item_id": "string, unique",
-              "resource_name": "string",
-              "quantity": "number",
-              "price": "number"
-            },
-            {
-              "item_id": "string, unique",
-              "resource_name": "string",
-              "quantity": "number",
-              "price": "number"
-            }
-          ]
+          "item_id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number"
+        }
+      ]
+    },
+    {
+      "id": "string, unique",
+      "owner_id": "string, unique",
+      "owner_name": "string",
+      "register_code": "string, unique",
+      "discount": "number",
+      "total_price": "number",
+      "transaction_date": "string",
+      "transaction_items": [
+        {
+          "item_id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number"
+        },
+        {
+          "item_id": "string, unique",
+          "resource_name": "string",
+          "quantity": "number",
+          "price": "number"
         }
       ]
     }
   ]
 }
 ```
+
+### Export Transactions to PDF
+
+Request :
+
+- Method : Get
+- Endpoint : `/transaction/export/{ownerId}`
+- Header :
+  - Accept : application/pdf
+  - Authorization : Bearer token
+
+Parameters:
+
+- {ownerId}: If an ownerId is provided, transactions for that owner will be fetched. Otherwise, all transactions will be fetched.
+
+Response :
+
+- Returns a PDF document containing the transaction report. The report includes:
+  - Transaction Details: Lists of resources, quantities, prices, discounts, and total amounts.
+  - If the ownerId is provided, the report will include only transactions for that specific owner.
+  - If the ownerId is not provided, the report will include all transactions.
 
 ### Delete Transaction by Id
 

@@ -2,14 +2,13 @@ const { nanoid } = require('nanoid')
 const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
-const GetLocalTime = require('../../utils/getLocalTime')
 
 class OwnersService {
-  constructor () {
+  constructor() {
     this._pool = new Pool()
   }
 
-  async verifyRegisterCode (registerCode) {
+  async verifyRegisterCode(registerCode) {
     const query = {
       text: 'SELECT register_code FROM owners WHERE register_code LIKE $1 AND deleted_at IS NULL',
       values: [registerCode]
@@ -20,7 +19,7 @@ class OwnersService {
     if (result.rows.length > 0) throw new InvariantError('Kode Register sudah digunakan')
   }
 
-  async verifyEditRegisterCode (id, registerCode) {
+  async verifyEditRegisterCode(id, registerCode) {
     const query = {
       text: 'SELECT register_code FROM owners WHERE register_code LIKE $1 AND deleted_at IS NULL',
       values: [registerCode]
@@ -41,10 +40,10 @@ class OwnersService {
     }
   }
 
-  async addOwner ({ registerCode, name, phone }) {
+  async addOwner({ registerCode, name, phone }) {
     await this.verifyRegisterCode(registerCode)
     const id = `owner-${nanoid(8)}`
-    const createdAt = await new GetLocalTime().getDate()
+    const createdAt = new Date().toISOString()
 
     const query = {
       text: 'INSERT INTO owners VALUES($1, $2, $3, $4, $5) RETURNING id',
@@ -58,7 +57,7 @@ class OwnersService {
     return result.rows[0].id
   }
 
-  async getOwners () {
+  async getOwners() {
     const result = await this._pool.query(`
       SELECT
         id,
@@ -77,7 +76,7 @@ class OwnersService {
     return result.rows
   }
 
-  async getOwnerById ({ id }) {
+  async getOwnerById({ id }) {
     const query = {
       text: 'SELECT id, register_code, name, phone, created_at FROM owners WHERE id = $1 AND deleted_at IS NULL',
       values: [id]
@@ -90,9 +89,9 @@ class OwnersService {
     return result.rows[0]
   }
 
-  async editOwnerById (id, { registerCode, name, phone }) {
+  async editOwnerById(id, { registerCode, name, phone }) {
     await this.verifyEditRegisterCode(id, registerCode)
-    const updatedAt = await new GetLocalTime().getDate()
+    const updatedAt = new Date().toISOString()
     const query = {
       text: `
         UPDATE
@@ -116,8 +115,8 @@ class OwnersService {
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui owner. Id tidak ditemukan')
   }
 
-  async deleteOwnerById (id) {
-    const deletedAt = await new GetLocalTime().getDate()
+  async deleteOwnerById(id) {
+    const deletedAt = new Date().toISOString()
     const query = {
       text: 'UPDATE owners SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
       values: [deletedAt, id]

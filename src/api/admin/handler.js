@@ -1,5 +1,5 @@
 const autoBind = require('auto-bind')
-const AuthenticationError = require('../../exceptions/AuthenticationsError')
+const admin = require('.')
 
 class AdminHandler {
   constructor(service, validator) {
@@ -63,8 +63,12 @@ class AdminHandler {
   }
 
   async deleteAdminByIdHandler(request) {
-    const { id } = request.params
-    await this._service.deleteAdminById(id)
+    const { id: credentialsId } = request.auth.credentials
+    const { id: adminId } = request.params
+
+    await this._service.verifyDeleteAdmin(adminId, credentialsId)
+
+    await this._service.deleteAdminById(adminId)
 
     return {
       status: 'success',

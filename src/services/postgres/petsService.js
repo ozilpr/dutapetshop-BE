@@ -2,16 +2,15 @@ const { nanoid } = require('nanoid')
 const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
-const GetLocalTime = require('../../utils/getLocalTime')
 
 class PetsService {
-  constructor () {
+  constructor() {
     this._pool = new Pool()
   }
 
-  async addPet ({ name, type, race, gender, birthdate }) {
+  async addPet({ name, type, race, gender, birthdate }) {
     const id = `pet-${nanoid(8)}`
-    const createdAt = await new GetLocalTime().getDate()
+    const createdAt = new Date().toISOString()
     const query = {
       text: 'INSERT INTO pets VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
       values: [id, name, type, race, gender, birthdate, createdAt]
@@ -24,7 +23,7 @@ class PetsService {
     return result.rows[0].id
   }
 
-  async getPets () {
+  async getPets() {
     const result = await this._pool.query(`
       SELECT DISTINCT
         p.id,
@@ -52,7 +51,7 @@ class PetsService {
     return result.rows
   }
 
-  async getPetsWithoutOwner () {
+  async getPetsWithoutOwner() {
     const result = await this._pool.query(`
       SELECT DISTINCT
         p.id,
@@ -83,7 +82,7 @@ class PetsService {
     return result.rows
   }
 
-  async getPetById (id) {
+  async getPetById(id) {
     const query = {
       text: 'SELECT id, name, type, race, gender, birthdate, created_at FROM pets WHERE id = $1 AND deleted_at IS NULL',
       values: [id]
@@ -96,8 +95,8 @@ class PetsService {
     return result.rows[0]
   }
 
-  async editPetById (id, { name, type, race, gender, birthdate }) {
-    const updatedAt = await new GetLocalTime().getDate()
+  async editPetById(id, { name, type, race, gender, birthdate }) {
+    const updatedAt = new Date().toISOString()
     const query = {
       text: 'UPDATE pets SET name = $1, type = $2, race = $3, gender = $4, birthdate = $5, updated_at = $6 WHERE id = $7 AND deleted_at IS NULL RETURNING id',
       values: [name, type, race, gender, birthdate, updatedAt, id]
@@ -108,8 +107,8 @@ class PetsService {
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui peliharaan. Id tidak ditemukan')
   }
 
-  async deletePetById (id) {
-    const deletedAt = await new GetLocalTime().getDate()
+  async deletePetById(id) {
+    const deletedAt = new Date().toISOString()
     const query = {
       text: 'UPDATE pets SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
       values: [deletedAt, id]
