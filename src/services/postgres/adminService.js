@@ -4,7 +4,6 @@ const bcryptjs = require('bcryptjs')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
 const AuthenticationError = require('../../exceptions/AuthenticationsError')
-const GetLocalTime = require('../../utils/getLocalTime')
 
 class AdminService {
   constructor() {
@@ -12,12 +11,12 @@ class AdminService {
   }
 
   async checkIfAdminExists(auth) {
-    const isExists = await this._pool.query('SELECT id FROM admin LIMIT 1')
+    const result = await this._pool.query('SELECT id FROM admin WHERE deleted_at IS NULL LIMIT 1')
 
-    if (isExists) {
-      if (!auth.isAuthenticated) {
-        throw new AuthenticationError('Anda harus login terlebih dahulu')
-      }
+    const adminIsExists = result.rows.length > 0
+
+    if (adminIsExists && !auth.isAuthenticated) {
+      throw new AuthenticationError('Anda harus login terlebih dahulu')
     }
   }
 
@@ -27,7 +26,7 @@ class AdminService {
 
     const id = `admin-${nanoid(8)}`
 
-    const createdAt = await new GetLocalTime().getDate()
+    const createdAt = new Date().toISOString()
 
     const hashedPassword = await bcryptjs.hash(password, 10)
     const query = {
@@ -188,7 +187,7 @@ class AdminService {
     await this.verifyEditNewUsername(username, id)
     const newAdmin = await this.verifyEditAdmin(id, username, fullname, password)
 
-    const updatedAt = await new GetLocalTime().getDate()
+    const updatedAt = new Date().toISOString()
 
     const query = {
       text: 'UPDATE admin SET username = $1, password = $2, fullname = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL RETURNING id',
@@ -200,8 +199,14 @@ class AdminService {
     if (!result.rows.length) throw new NotFoundError('Gagal memperbarui admin. Id tidak ditemukan')
   }
 
+  async verifyDeleteAdmin(id, credentialsId) {
+    if (id === credentialsId) {
+      throw new InvariantError('Anda tidak dapat menghapus akun yang sedang Anda gunakan saat ini')
+    }
+  }
+
   async deleteAdminById(id) {
-    const deletedAt = await new GetLocalTime().getDate()
+    const deletedAt = new Date().toISOString()
     const query = {
       text: 'UPDATE admin SET deleted_at = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id',
       values: [deletedAt, id]

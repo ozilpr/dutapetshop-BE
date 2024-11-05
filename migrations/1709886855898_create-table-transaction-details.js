@@ -16,7 +16,7 @@ exports.up = (pgm) => {
         notNull: false
       },
       total_price: {
-        type: 'INTEGER',
+        type: 'DECIMAL(11,2)',
         notNull: true
       },
       transaction_date: {

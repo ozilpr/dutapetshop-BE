@@ -1,14 +1,14 @@
 const autoBind = require('auto-bind')
 
 class MedResourcesHandler {
-  constructor (service, validator) {
+  constructor(service, validator) {
     this._service = service
     this._validator = validator
 
     autoBind(this)
   }
 
-  async addResourceHandler (request, h) {
+  async addResourceHandler(request, h) {
     await this._validator.validateMedResourcePayload(request.payload)
 
     const { name, description = 'no description', type, price } = request.payload
@@ -17,7 +17,7 @@ class MedResourcesHandler {
 
     const response = h.response({
       status: 'success',
-      message: 'Resource berhasil ditambahkan',
+      message: 'Produk berhasil ditambahkan',
       data: {
         resourceId
       }
@@ -27,7 +27,7 @@ class MedResourcesHandler {
     return response
   }
 
-  async getResourcesHandler () {
+  async getResourcesHandler() {
     const resources = await this._service.getResources()
     return {
       status: 'success',
@@ -37,7 +37,7 @@ class MedResourcesHandler {
     }
   }
 
-  async getResourceByIdHandler (request) {
+  async getResourceByIdHandler(request) {
     const { id } = request.params
     const resource = await this._service.getResourceById(id)
     return {
@@ -48,7 +48,7 @@ class MedResourcesHandler {
     }
   }
 
-  async editResourceByIdHandler (request) {
+  async editResourceByIdHandler(request) {
     await this._validator.validateMedResourcePayload(request.payload)
 
     const { id } = request.params
@@ -57,17 +57,17 @@ class MedResourcesHandler {
 
     return {
       status: 'success',
-      message: 'Resource berhasil diperbarui'
+      message: 'Produk berhasil diperbarui'
     }
   }
 
-  async deleteResourceByIdHandler (request) {
+  async deleteResourceByIdHandler(request) {
     const { id } = request.params
     await this._service.deleteResourceById(id)
 
     return {
       status: 'success',
-      message: 'Resource berhasil dihapus'
+      message: 'Produk berhasil dihapus'
     }
   }
 }

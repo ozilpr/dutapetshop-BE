@@ -3,51 +3,16 @@ const Handlebars = require('handlebars')
 const puppeteer = require('puppeteer')
 const path = require('path')
 const InvariantError = require('../../exceptions/InvariantError')
+const DateUtils = require('../../utils/DateUtils')
 
 class PdfService {
   constructor() {
     this._puppeteer = puppeteer
   }
 
-  getStartDate(daysAgo) {
-    const currentDate = new Date()
-    currentDate.setDate(currentDate.getDate() - daysAgo)
-    return currentDate
-  }
-
-  _formatDate = (date) => {
-    if (isNaN(new Date(date))) return date
-
-    const newDate = new Date(date)
-    const dateOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }
-    return newDate.toLocaleDateString('id-ID', dateOptions)
-  }
-
-  _formatTransactionDate = (date) => {
-    const newDate = new Date(date)
-
-    const dateOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZoneName: 'short'
-    }
-
-    return newDate.toLocaleDateString('id-ID', dateOptions)
-  }
-
   async generateTransactionPdf(
     transactions,
-    {
-      startDate = new Date(new Date().setDate(new Date().getDate() - 30)).setHours(0, 0, 0, 0),
-      endDate = new Date().setHours(0, 0, 0, 0)
-    }
+    { startDate = new DateUtils().getDateThirtyDaysAgo(), endDate = new Date() }
   ) {
     try {
       const templatePath = path.join(__dirname, '../../templates/TransactionListTemplate.html')
@@ -59,23 +24,55 @@ class PdfService {
       // Format the dates
       const formattedTransactions = transactions.map((transaction) => ({
         ...transaction,
-        transaction_date: this._formatTransactionDate(transaction.transaction_date)
+        transaction_date: new DateUtils().formatTransactionDate(transaction.transaction_date)
       }))
 
       Handlebars.registerHelper('multiply', function (quantity, price) {
-        return parseFloat(quantity * price).toLocaleString('id-ID', {
-          style: 'currency',
-          currency: 'IDR',
-          minimumFractionDigits: 0
-        })
+        return parseFloat(quantity * price)
+          .toLocaleString('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 2
+          })
+          .replace('IDR', 'Rp')
+      })
+
+      Handlebars.registerHelper('countTotal', function (transaction_items) {
+        const total = transaction_items.reduce((accumulator, item) => {
+          const itemPrice = parseFloat(item.price * item.quantity)
+          return isNaN(itemPrice) ? accumulator : accumulator + itemPrice
+        }, 0)
+
+        return total
+          .toLocaleString('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 2
+          })
+          .replace('IDR', 'Rp')
       })
 
       Handlebars.registerHelper('formatIDR', function (number) {
-        return parseFloat(number).toLocaleString('id-ID', {
-          style: 'currency',
-          currency: 'IDR',
-          minimumFractionDigits: 0
-        })
+        return parseFloat(number)
+          .toLocaleString('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 2
+          })
+          .replace('IDR', 'Rp')
+      })
+
+      Handlebars.registerHelper('countIncome', function (transactions) {
+        const totalIncome = transactions.reduce((accumulator, transaction) => {
+          return parseFloat(accumulator) + parseFloat(transaction.total_price)
+        }, 0)
+        return parseFloat(totalIncome)
+          .toLocaleString('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 2
+          })
+          .replace('IDR', 'Rp')
       })
 
       Handlebars.registerHelper('index', function (value) {
@@ -85,8 +82,8 @@ class PdfService {
       // Generate the content
       const content = template({
         transactions: formattedTransactions,
-        startDate: this._formatDate(startDate),
-        endDate: this._formatDate(endDate)
+        startDate: new DateUtils().formatDate(startDate),
+        endDate: new DateUtils().formatDate(endDate)
       })
 
       // Launch Puppeteer and generate the PDF
@@ -108,10 +105,12 @@ class PdfService {
 
       await browser.close()
 
+      if (!pdfBuffer) throw new InvariantError('Tidak dapat membuat File PDF')
+
       return pdfBuffer
     } catch (error) {
-      console.error(error.message)
-      throw new InvariantError('Tidak dapat mengekspor ke PDF')
+      console.error(error)
+      throw new InvariantError('Tidak dapat membuat File PDF')
     }
   }
 }

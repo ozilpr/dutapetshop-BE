@@ -1,4 +1,5 @@
 const autoBind = require('auto-bind')
+const InvariantError = require('../../exceptions/InvariantError')
 
 class TransactionsHandler {
   constructor(transactionsService, pdfService, validator) {
@@ -53,37 +54,26 @@ class TransactionsHandler {
   }
 
   async generateTransactionPdfHandler(request, h) {
-    try {
-      // Validate the query parameters
-      await this._validator.validateTransactionQuery(request.query)
+    // Validate the query parameters
+    await this._validator.validateTransactionQuery(request.query)
 
-      const { startDate, endDate, ownerId } = request.query
+    const { ownerId } = request.query
 
-      // Fetch transactions based on ownerId
-      const transactions = ownerId
-        ? await this._transactionsService.getTransactionsByOwnerId(ownerId, request.query)
-        : await this._transactionsService.getTransactions(request.query)
+    // Fetch transactions based on ownerId
+    const transactions = ownerId
+      ? await this._transactionsService.getTransactionsByOwnerId(ownerId, request.query)
+      : await this._transactionsService.getTransactions(request.query)
 
-      // Generate PDF
-      const pdfBuffer = await this._pdfService.generateTransactionPdf(transactions, request.query)
-      const buffer = Buffer.from(pdfBuffer)
+    // Generate PDF
+    const pdfBuffer = await this._pdfService.generateTransactionPdf(transactions, request.query)
+    const buffer = Buffer.from(pdfBuffer)
 
-      const filename = () => {
-        if (startDate && endDate) return `transaksi-${startDate}-${endDate}`
-        if (startDate) return `transactions-${startDate}`
-        if (endDate) return `transactions-${endDate}`
-        return `transaksi-${new Date().toISOString()}`
-      }
+    // Prepare the response
+    const response = h.response(buffer)
+    response.type('application/pdf')
+    response.header('Content-Disposition', `attachment; filename="list_transaksi.pdf"`)
 
-      // Prepare the response
-      const response = h.response(buffer)
-      response.type('application/pdf')
-      response.header('Content-Disposition', `attachment; filename="${filename()}.pdf"`)
-
-      return response
-    } catch (error) {
-      console.error(error)
-    }
+    return response
   }
 
   async deleteTransactionByIdHandler(request) {

@@ -20,7 +20,7 @@ exports.up = (pgm) => {
         notNull: true
       },
       price: {
-        type: 'INTEGER',
+        type: 'DECIMAL(10,2)',
         notNull: true
       },
       created_at: {

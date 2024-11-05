@@ -2,7 +2,6 @@ const { nanoid } = require('nanoid')
 const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
-const GetLocalTime = require('../../utils/getLocalTime')
 
 class PetOwnerService {
   constructor() {
@@ -22,7 +21,7 @@ class PetOwnerService {
 
   async addPetOwner({ ownerId, petId }) {
     const id = `powner-${nanoid(8)}`
-    const createdAt = await new GetLocalTime().getDate()
+    const createdAt = new Date().toISOString()
 
     const query = {
       text: 'INSERT INTO pet_owner VALUES($1, $2, $3, $4) RETURNING id',

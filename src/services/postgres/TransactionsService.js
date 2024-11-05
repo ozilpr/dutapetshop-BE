@@ -2,22 +2,16 @@ const { nanoid } = require('nanoid')
 const { Pool } = require('pg')
 const InvariantError = require('../../exceptions/InvariantError')
 const NotFoundError = require('../../exceptions/NotFoundError')
-const GetLocalTime = require('../../utils/getLocalTime')
+const DateUtils = require('../../utils/DateUtils')
 
 class TransactionsService {
   constructor() {
     this._pool = new Pool()
   }
 
-  getStartDate(daysAgo) {
-    const currentDate = new Date()
-    currentDate.setDate(currentDate.getDate() - daysAgo)
-    return currentDate
-  }
-
   async addTransaction({ ownerId, discount, totalPrice, transactionsData }) {
     const transactionId = `transaction-${nanoid(8)}`
-    const transactionDate = await new GetLocalTime().getDate()
+    const transactionDate = new Date().toISOString()
     const client = await this._pool.connect()
 
     const transactionItems = []
@@ -69,7 +63,7 @@ class TransactionsService {
     return { transactionId, transactionItems }
   }
 
-  async getTransactions({ startDate = this.getStartDate(30), endDate = new Date() }) {
+  async getTransactions({ startDate = new DateUtils().getDateThirtyDaysAgo(), endDate = new Date() }) {
     const result = await this._pool.query(
       `
       SELECT
@@ -132,7 +126,10 @@ class TransactionsService {
     return data
   }
 
-  async getTransactionsByOwnerId(ownerId, { startDate = this.getStartDate(30), endDate = new Date() }) {
+  async getTransactionsByOwnerId(
+    ownerId,
+    { startDate = new DateUtils().getDateThirtyDaysAgo(), endDate = new Date() }
+  ) {
     const result = await this._pool.query(
       `
         SELECT
@@ -197,7 +194,7 @@ class TransactionsService {
   }
 
   async deleteTransactionById(id) {
-    const deletedAt = await new GetLocalTime().getDate()
+    const deletedAt = new Date().toISOString()
 
     const queryTransactions = {
       text: `

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -65,6 +65,8 @@
   <body>
     <h1>Laporan Transaksi</h1>
     <h2>{{startDate}} - {{endDate}}</h2>
+    <p><strong>Total Pemasukan: {{countIncome transactions}}</strong></p>
+    <hr />
     {{#each transactions}}
     <div class="header avoid">
       <p><strong>Owner:</strong> {{register_code}} - {{owner_name}}</p>
@@ -90,15 +92,23 @@
           <td class="text-left">{{multiply quantity price}}</td>
         </tr>
         {{/each}}
+
+        <tr>
+          <td colspan="3" class="no-border-bl"></td>
+          <td class="text-left">Total:</td>
+          <td class="text-left">{{countTotal transaction_items}}</td>
+        </tr>
+        {{#if discount}}
         <tr>
           <td colspan="3" class="no-border-bl"></td>
           <td class="text-left">Diskon:</td>
           <td class="text-left text-red">-{{formatIDR discount}}</td>
         </tr>
+        {{/if}}
         <tr>
           <td colspan="3" class="no-border-bl"></td>
-          <td class="text-left">Total:</td>
-          <td class="text-left">{{formatIDR total_price}}</td>
+          <td class="text-left"><strong>Total Transaksi:</strong></td>
+          <td class="text-left"><strong>{{formatIDR total_price}}</strong></td>
         </tr>
       </tbody>
     </table>
