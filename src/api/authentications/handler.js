@@ -1,7 +1,7 @@
 const autoBind = require('auto-bind')
 
 class AuthenticationsHandler {
-  constructor (authenticationsService, adminService, tokenManager, validator) {
+  constructor(authenticationsService, adminService, tokenManager, validator) {
     this._authenticationsService = authenticationsService
     this._adminService = adminService
     this._tokenManager = tokenManager
@@ -10,7 +10,7 @@ class AuthenticationsHandler {
     autoBind(this)
   }
 
-  async postAuthenticationHandler (request, h) {
+  async postAuthenticationHandler(request, h) {
     await this._validator.validateAuthenticationPayload(request.payload)
 
     const { username, password } = request.payload
@@ -33,7 +33,7 @@ class AuthenticationsHandler {
     return response
   }
 
-  async putAuthenticationHandler (request, h) {
+  async putAuthenticationHandler(request, h) {
     const { refreshToken } = request.payload
     await this._authenticationsService.verifyRefreshToken(refreshToken)
     const { id } = this._tokenManager.verifyRefreshToken(refreshToken)
@@ -48,7 +48,7 @@ class AuthenticationsHandler {
     }
   }
 
-  async deleteAuthenticationHandler (request, h) {
+  async deleteAuthenticationHandler(request, h) {
     const { refreshToken } = request.payload
     await this._authenticationsService.verifyRefreshToken(refreshToken)
     await this._authenticationsService.deleteRefreshToken(refreshToken)

@@ -94,7 +94,7 @@ class TransactionsService {
       [startDate, endDate]
     )
 
-    if (!result.rows.length) throw new NotFoundError('Transaksi tidak ditemukan di tanggal tersebut')
+    if (!result.rows.length) throw new NotFoundError('Transaksi tidak ditemukan')
 
     const data = result.rows.reduce((acc, row) => {
       const transaction = acc.find((t) => t.id === row.transaction_id)
